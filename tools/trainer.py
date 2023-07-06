@@ -4,13 +4,19 @@ import numpy as np
 import os
 
 class Trainer:
-    def __init__(self, optimizer, loss_fn, device, log_path):
+    def __init__(self, model, optimizer, loss_fn, device, log_path):
         # TODO: Add configs
+        # TODO: Add scheduler
+        # TODO: Add early stopping
+        self.model = model
         self.optimizer = optimizer
         self.loss_fn = loss_fn
         self.device = device
         self.log_path = log_path
         self.checkpoints_path = os.path.join(log_path, "checkpoints")
+
+        if not os.path.exists(self.checkpoints_path):
+            os.makedirs(self.checkpoints_path)
     
     @staticmethod
     def _print_epoch_stats(loss, metrics : dict, split_name : str):
@@ -29,13 +35,13 @@ class Trainer:
     def _save_log(self, obj, filename):
         torch.save(obj, os.path.join(self.log_path, filename))
 
-    def _epoch_iteration(self, dataloader, model, is_train=True, metrics={}):
+    def _epoch_iteration(self, dataloader, is_train=True, metrics={}):
         if is_train:
             assert self.optimizer is not None, "optimizer must be provided for training"
         
         num_batches = len(dataloader)
 
-        model.train() if is_train else model.eval()
+        self.model.train() if is_train else self.model.eval()
 
         total_loss = 0.0
         total_metrics = {metric: 0.0 for metric in metrics}
@@ -44,7 +50,7 @@ class Trainer:
             for inputs, targets in tqdm(dataloader, desc=f"{'Train' if is_train else 'Validation'}"):
                 inputs, targets = inputs.to(self.device), targets.to(self.device)
 
-                outputs = model(inputs)
+                outputs = self.model(inputs)
                 loss = self.loss_fn(outputs, targets)
 
                 if is_train:
@@ -64,7 +70,7 @@ class Trainer:
 
         return avg_loss, total_metrics
     
-    def train(self, train_dataloader, validation_dataloader, model, num_epochs, metrics={}):
+    def train(self, train_dataloader, validation_dataloader, num_epochs, metrics={}):
         print(f"Training for {num_epochs} epochs")
 
         train_history = {"loss": [], "metrics": {metric: [] for metric in metrics}}
@@ -76,9 +82,6 @@ class Trainer:
 
             train_loss, train_metrics = self._epoch_iteration(
                 train_dataloader, 
-                model, 
-                self.loss_fn, 
-                self.optimizer, 
                 is_train=True, 
                 metrics=metrics
             )
@@ -88,13 +91,11 @@ class Trainer:
 
             validation_loss, validation_metrics = self._epoch_iteration(
                 validation_dataloader, 
-                model, 
-                self.loss_fn, 
                 is_train=False, 
                 metrics=metrics
             )
 
-            Trainer.print_epoch_stats(validation_loss, validation_metrics, "Validation")
+            Trainer._print_epoch_stats(validation_loss, validation_metrics, "Validation")
 
             if validation_loss < best_validation_loss:
                 best_validation_loss = validation_loss
@@ -117,11 +118,9 @@ class Trainer:
             
             print("Finished Training")
             
-    def test(self, test_dataloader, model, metrics={}):
+    def test(self, test_dataloader, metrics={}):
         test_loss, test_metrics = self._epoch_iteration(
-            test_dataloader, 
-            model, 
-            self.loss_fn, 
+            test_dataloader,
             is_train=False, 
             metrics=metrics
         )
