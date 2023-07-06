@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch.nn as nn
 from core.trainer import Trainer
-from utils.loader import load_config, load_dataset, load_optimizer
+from utils.loader import load_config, load_dataset, load_loss, load_optimizer
 
 def main():
     # TODO: Add argparse
@@ -26,7 +26,7 @@ def main():
     batch_size = trainig_config['batch_size']
     #train_split = trainig_config['train_split']
     optimizer = trainig_config['optimizer']
-    #loss = trainig_config['loss']
+    loss = trainig_config['loss']
     #metrics = trainig_config['metrics']
     #stop_condition = trainig_config['stop_condition']
 
@@ -46,7 +46,7 @@ def main():
     import torch.optim as optim
 
     model = Model1(num_classes=10)
-    criterion = nn.CrossEntropyLoss()
+    loss = load_loss(loss)
     optimizer = load_optimizer(optimizer, model)
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -56,7 +56,7 @@ def main():
     model.to(device)
 
     # TODO: Create log folder with timestamp
-    trainer = Trainer(model, optimizer, criterion, device=device, log_path='logs/')
+    trainer = Trainer(model, optimizer, loss, device=device, log_path='logs/')
 
     trainer.train(train_loader, validation_loader, epochs, metrics=metrics)
 

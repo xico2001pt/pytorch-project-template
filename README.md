@@ -80,7 +80,7 @@ pytorch-project-template/
 │   └── ...
 │
 ├── utils/  # utility functions
-│   ├── loader.py
+│   ├── loader.py  # utility functions for loading data using the configurations
 │   ├── utils.py
 │   └── ...
 │

@@ -2,6 +2,7 @@ import yaml
 import os
 from glob import glob
 import importlib
+from core.losses import *
 from core.optimizers import *
 
 def load_modules(path : str) -> list:
@@ -31,6 +32,14 @@ def load_dataset(name : str):
             dataset_obj = getattr(module, dataset_class)
             return dataset_obj(**dataset_args)
     return None
+
+def load_loss(name : str):
+    losses_config = load_config('configs/losses.yaml')
+    loss_config = losses_config[name]
+    loss_class = loss_config['class']
+    loss_args = loss_config['args']
+
+    return globals()[loss_class](**loss_args)
 
 def load_optimizer(name : str, model):
     optimizers_config = load_config('configs/optimizers.yaml')
