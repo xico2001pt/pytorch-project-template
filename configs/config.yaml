@@ -1,0 +1,30 @@
+# Dataset
+dataset:
+  name: dataset1                # Name of dataset
+  root: data/                   # Path to dataset root
+
+# Model
+model:
+  name: model1                  # Name of model
+
+# Trainer
+trainer:
+  log_path: logs/               # Path to save logs
+  verbose: true                 # Print logs on console
+
+# Training
+training:
+  num_epochs: 100               # Number of training epochs
+  batch_size: 32                # Training batch size
+  learning_rate: 0.001          # Learning rate
+  optimizer: adam               # Optimizer
+  loss: cross_entropy           # Loss function
+  metrics: [accuracy]           # Metrics to evaluate
+  stop_condition: val_loss      # Condition to stop training
+  model_checkpoint:
+    save_freq: 10               # Save model every save_freq epochs. If 0, only the best model is saved
+
+# Testing
+testing:
+  batch_size: 32                # Test batch size
+  metrics: [accuracy]           # Metrics to evaluate

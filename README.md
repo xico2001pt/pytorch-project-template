@@ -34,7 +34,7 @@ pip install -r requirements.txt
 pytorch-project-template/
 │
 ├── configs/  # holds the configuration files
-│   ├── config1.yaml
+│   ├── config.yaml
 │   └── ...
 │
 ├── data/  # default directory for storing input data
