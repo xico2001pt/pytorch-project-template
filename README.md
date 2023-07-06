@@ -30,6 +30,54 @@ pip install -r requirements.txt
 
 ## Project Structure
 
+```python
+pytorch-project-template/
+│
+├── configs/  # holds the configuration files
+│   ├── config1.yaml
+│   └── ...
+│
+├── data/  # default directory for storing input data
+│   ├── data1.csv
+│   └── ...
+│
+├── datasets/  # contains the dataset definitions
+│   ├── dataset1.py
+│   └── ...
+│
+├── logs/  # default directory for storing logs
+│   ├── train-YYYY-MM-DD-HH-MM-SS/  # training logs
+│   │   ├── checkpoints/  # model checkpoints
+│   │   │   ├── checkpoint1.pth
+│   │   │   └── ...
+│   │   ├── losses.log  # training losses
+│   │   ├── metrics.log  # training metrics
+│   │   └── ...
+│   │
+│   ├── test-YYYY-MM-DD-HH-MM-SS/  # testing logs
+│   │   ├── losses.log  # testing losses
+│   │   ├── metrics.log  # testing metrics
+│   │   └── ...
+│   │
+│   └── ...
+│
+├── models/  # contains the model definitions
+│   ├── model1.py
+│   └── ...
+│
+├── tools/  # scripts for training, testing, etc.
+│   ├── test.py
+│   ├── train.py
+│   ├── trainer.py
+│   └── ...
+│
+├── utils/  # utility functions
+│   ├── utils.py
+│   └── ...
+│
+└── requirements.txt  # project dependencies
+```
+
 ## Configurations
 
 ## Future Work
