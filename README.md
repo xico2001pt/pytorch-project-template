@@ -48,15 +48,15 @@ pytorch-project-template/
 ├── logs/  # default directory for storing logs
 │   ├── YYYY-MM-DD-HH-MM-SS/  # training logs
 │   │   ├── checkpoints/  # model checkpoints
-│   │   │   ├── checkpoint1.pth
-│   │   │   └── ...
+│   │   │   ├── best_checkpoint.pth  # best model checkpoint
+│   │   │   └── latest_checkpoint.pth  # latest model checkpoint
 │   │   │
-│   │   ├── train_losses.log  # train losses
-│   │   ├── train_metrics.log  # train metrics
-│   │   ├── validation_losses.log  # validation losses
-│   │   ├── validation_metrics.log  # validation metrics
-│   │   ├── test_losses.log  # test losses
-│   │   └── test_metrics.log  # test metrics
+│   │   ├── train_losses.json  # train losses
+│   │   ├── train_metrics.json  # train metrics
+│   │   ├── validation_losses.json  # validation losses
+│   │   ├── validation_metrics.json  # validation metrics
+│   │   ├── test_loss.json  # test loss
+│   │   └── test_metrics.json  # test metrics
 │   │
 │   └── ...
 │

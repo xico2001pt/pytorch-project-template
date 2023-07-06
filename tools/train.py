@@ -8,6 +8,8 @@ import yaml
 import torch
 import torchvision
 import torchvision.transforms as transforms
+# import subset
+from torch.utils.data import Subset
 from torch.utils.data import DataLoader
 from models.model1 import Model1
 from datasets.dataset1 import Dataset1
@@ -34,14 +36,25 @@ def main():
         transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))]
     )
 
-    train_dataset = Dataset1('data/', train=True, transform=data_aug)
-    train_loader = DataLoader(train_dataset, batch_size=4, shuffle=True, num_workers=2)
+    batch_size = 8
 
+    dataset = Dataset1('data/', train=True, transform=data_aug)
+    train_dataset = Subset(dataset, range(5000, len(dataset)))
+    validation_dataset = Subset(dataset, range(5000))
     test_dataset = Dataset1('data/', train=False, transform=data_aug)
-    test_loader = DataLoader(test_dataset, batch_size=4, shuffle=False, num_workers=2)
+
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=4)
+    validation_loader = DataLoader(validation_dataset, batch_size=batch_size, shuffle=False, num_workers=4)
+    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False, num_workers=4)
 
     classes = ('plane', 'car', 'bird', 'cat',
            'deer', 'dog', 'frog', 'horse', 'ship', 'truck')
+    
+    #import f1score
+
+    metrics = {
+        "accuracy": lambda y_pred, y_true: (y_pred.argmax(dim=1) == y_true).float().mean()
+    }
 
     import torch.optim as optim
 
@@ -51,22 +64,16 @@ def main():
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
+    print(f"Using device: {device}")
+
+    model.to(device)
+
+    # TODO: Create log folder with timestamp
     trainer = Trainer(model, optimizer, criterion, device=device, log_path='logs/')
 
-    trainer.train(train_loader, test_loader, 2)
+    trainer.train(train_loader, validation_loader, 2, metrics=metrics)
 
-    dataiter = iter(train_loader)
-    images, labels = next(dataiter)
-
-    imshow(torchvision.utils.make_grid(images))
-
-    print(' '.join(f'{classes[labels[j]]:5s}' for j in range(4)))
-
-    outputs = model(images)
-
-    _, predicted = torch.max(outputs, 1)
-
-    print('Predicted: ', ' '.join(f'{classes[predicted[j]]:5s}' for j in range(4)))
+    trainer.test(test_loader, metrics=metrics)
 
 
 if __name__ == "__main__":

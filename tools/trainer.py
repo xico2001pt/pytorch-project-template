@@ -1,6 +1,7 @@
 import torch
 from tqdm import tqdm
 import numpy as np
+import json
 import os
 
 class Trainer:
@@ -14,6 +15,9 @@ class Trainer:
         self.device = device
         self.log_path = log_path
         self.checkpoints_path = os.path.join(log_path, "checkpoints")
+
+        if not os.path.exists(self.log_path):
+            os.makedirs(self.log_path)
 
         if not os.path.exists(self.checkpoints_path):
             os.makedirs(self.checkpoints_path)
@@ -33,7 +37,7 @@ class Trainer:
         torch.save(save_dict, os.path.join(self.checkpoints_path, filename))
     
     def _save_log(self, obj, filename):
-        torch.save(obj, os.path.join(self.log_path, filename))
+        json.dump(obj, open(os.path.join(self.log_path, filename), "w"))
 
     def _epoch_iteration(self, dataloader, is_train=True, metrics={}):
         if is_train:
@@ -50,11 +54,13 @@ class Trainer:
             for inputs, targets in tqdm(dataloader, desc=f"{'Train' if is_train else 'Validation'}"):
                 inputs, targets = inputs.to(self.device), targets.to(self.device)
 
+                if is_train:
+                    self.optimizer.zero_grad()
+
                 outputs = self.model(inputs)
                 loss = self.loss_fn(outputs, targets)
 
                 if is_train:
-                    self.optimizer.zero_grad()
                     loss.backward()
                     self.optimizer.step()
 
@@ -110,10 +116,10 @@ class Trainer:
                 train_history["metrics"][metric].append(train_metrics[metric])
                 validation_history["metrics"][metric].append(validation_metrics[metric])
 
-            self._save_log(train_history["loss"], "train_losses.pth")
-            self._save_log(train_history["metrics"], "train_metrics.pth")
-            self._save_log(validation_history["loss"], "validation_losses.pth")
-            self._save_log(validation_history["metrics"], "validation_metrics.pth")
+            self._save_log(train_history["loss"], "train_losses.json")
+            self._save_log(train_history["metrics"], "train_metrics.json")
+            self._save_log(validation_history["loss"], "validation_losses.json")
+            self._save_log(validation_history["metrics"], "validation_metrics.json")
             # TODO: Save configs
             
             print("Finished Training")
@@ -127,6 +133,6 @@ class Trainer:
 
         Trainer._print_epoch_stats(test_loss, test_metrics, "Test")
 
-        self._save_log(test_loss, "test_losses.pth")
-        self._save_log(test_metrics, "test_metrics.pth")
+        self._save_log(test_loss, "test_loss.json")
+        self._save_log(test_metrics, "test_metrics.json")
         # TODO: Save configs
