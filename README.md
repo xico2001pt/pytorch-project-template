@@ -50,13 +50,15 @@ pytorch-project-template/
 │   │   ├── checkpoints/  # model checkpoints
 │   │   │   ├── checkpoint1.pth
 │   │   │   └── ...
-│   │   ├── losses.log  # training losses
-│   │   ├── metrics.log  # training metrics
+│   │   ├── train_losses.log  # train losses
+│   │   ├── train_metrics.log  # train metrics
+│   │   ├── validation_losses.log  # validation losses
+│   │   ├── validation_metrics.log  # validation metrics
 │   │   └── ...
 │   │
 │   ├── test-YYYY-MM-DD-HH-MM-SS/  # testing logs
-│   │   ├── losses.log  # testing losses
-│   │   ├── metrics.log  # testing metrics
+│   │   ├── test_losses.log  # test losses
+│   │   ├── test_metrics.log  # test metrics
 │   │   └── ...
 │   │
 │   └── ...

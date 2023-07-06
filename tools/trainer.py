@@ -109,10 +109,10 @@ class Trainer:
                 train_history["metrics"][metric].append(train_metrics[metric])
                 validation_history["metrics"][metric].append(validation_metrics[metric])
 
-            self._save_log(train_history["loss"], "train_loss_history.pth")
-            self._save_log(train_history["metrics"], "train_metrics_history.pth")
-            self._save_log(validation_history["loss"], "validation_loss_history.pth")
-            self._save_log(validation_history["metrics"], "validation_metrics_history.pth")
+            self._save_log(train_history["loss"], "train_losses.pth")
+            self._save_log(train_history["metrics"], "train_metrics.pth")
+            self._save_log(validation_history["loss"], "validation_losses.pth")
+            self._save_log(validation_history["metrics"], "validation_metrics.pth")
             # TODO: Save configs
             
             print("Finished Training")
@@ -128,7 +128,6 @@ class Trainer:
 
         Trainer._print_epoch_stats(test_loss, test_metrics, "Test")
 
-        self._save_log(test_loss, "test_loss.pth")
+        self._save_log(test_loss, "test_losses.pth")
         self._save_log(test_metrics, "test_metrics.pth")
         # TODO: Save configs
-
