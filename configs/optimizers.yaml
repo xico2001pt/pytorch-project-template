@@ -1,0 +1,10 @@
+sgd:
+  class: SGD
+  args:
+    lr: 0.01  # Learning rate
+    momentum: 0.9  # Momentum
+
+adam:
+  class: Adam
+  args:
+    lr: 0.001  # Learning rate

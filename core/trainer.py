@@ -26,7 +26,7 @@ class Trainer:
     def _print_epoch_stats(loss, metrics : dict, split_name : str):
         print(f"{split_name} Loss: {loss:.4f}")
         for metric in metrics:
-            print(f"\t{split_name} {metric}: {metrics[metric]:.4f}")
+            print(f"{split_name} {metric}: {metrics[metric]:.4f}")
     
     def _save_checkpoint(self, filename, epoch):
         save_dict = {
@@ -39,7 +39,7 @@ class Trainer:
     def _save_log(self, obj, filename):
         json.dump(obj, open(os.path.join(self.log_path, filename), "w"))
 
-    def _epoch_iteration(self, dataloader, is_train=True, metrics={}):
+    def _epoch_iteration(self, dataloader, is_train=True, metrics={}, description="Train"):
         if is_train:
             assert self.optimizer is not None, "optimizer must be provided for training"
         
@@ -51,7 +51,7 @@ class Trainer:
         total_metrics = {metric: 0.0 for metric in metrics}
 
         with torch.set_grad_enabled(is_train):
-            for inputs, targets in tqdm(dataloader, desc=f"{'Train' if is_train else 'Validation'}"):
+            for inputs, targets in tqdm(dataloader, desc=description):
                 inputs, targets = inputs.to(self.device), targets.to(self.device)
 
                 if is_train:
@@ -89,7 +89,8 @@ class Trainer:
             train_loss, train_metrics = self._epoch_iteration(
                 train_dataloader, 
                 is_train=True, 
-                metrics=metrics
+                metrics=metrics,
+                description="Train"
             )
 
             # TODO: If verbose
@@ -98,7 +99,8 @@ class Trainer:
             validation_loss, validation_metrics = self._epoch_iteration(
                 validation_dataloader, 
                 is_train=False, 
-                metrics=metrics
+                metrics=metrics,
+                description="Validation"
             )
 
             Trainer._print_epoch_stats(validation_loss, validation_metrics, "Validation")
@@ -122,13 +124,12 @@ class Trainer:
             self._save_log(validation_history["metrics"], "validation_metrics.json")
             # TODO: Save configs
             
-            print("Finished Training")
-            
     def test(self, test_dataloader, metrics={}):
         test_loss, test_metrics = self._epoch_iteration(
             test_dataloader,
             is_train=False, 
-            metrics=metrics
+            metrics=metrics,
+            description="Test"
         )
 
         Trainer._print_epoch_stats(test_loss, test_metrics, "Test")

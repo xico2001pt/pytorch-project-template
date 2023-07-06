@@ -35,10 +35,19 @@ pytorch-project-template/
 │
 ├── configs/  # holds the configuration files
 │   ├── config.yaml
+│   ├── datasets.yaml
+│   ├── losses.yaml
+│   ├── metrics.yaml
+│   └── ...
+│
+├── core/  # contains the core functionality
+│   ├── losses.py  # loss functions
+│   ├── metrics.py  # evaluation metrics
+│   ├── optimizers.py  # optimizers
+│   ├── trainer.py  # trainer class
 │   └── ...
 │
 ├── data/  # default directory for storing input data
-│   ├── data1.csv
 │   └── ...
 │
 ├── datasets/  # contains the dataset definitions
@@ -71,6 +80,7 @@ pytorch-project-template/
 │   └── ...
 │
 ├── utils/  # utility functions
+│   ├── loader.py
 │   ├── utils.py
 │   └── ...
 │

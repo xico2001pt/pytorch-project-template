@@ -8,19 +8,22 @@ model:
 trainer:
   log_path: logs/  # Path to save logs
   verbose: true  # Print logs on console
+  save_freq: 10  # Save model every save_freq epochs. If 0, only the best model is saved
 
 training:
-  num_epochs: 100  # Number of training epochs
+  dataset: cifar10_train  # Dataset to use for training
+  epochs: 2  # Number of training epochs
+  num_workers: 4  # Number of workers for data loading
   batch_size: 32  # Training batch size
-  learning_rate: 0.001  # Learning rate
-  optimizer: adam  # Optimizer
+  train_split: 0.8  # Train/val split
+  optimizer: sgd  # Optimizer
   loss: cross_entropy  # Loss function
   metrics: [accuracy]  # Metrics to evaluate
-  stop_condition: val_loss  # Condition to stop training
-  model_checkpoint:
-    save_freq: 10  # Save model every save_freq epochs. If 0, only the best model is saved
+  stop_condition: val_loss  # Condition to stop training  
 
 testing:
+  dataset: cifar10_test  # Dataset to use for testing
   checkpoint_path: logs/checkpoints/best_checkpoints.pth  # Path to checkpoint to load
+  num_workers: 4  # Number of workers for data loading
   batch_size: 32  # Test batch size
   metrics: [accuracy]  # Metrics to evaluate
