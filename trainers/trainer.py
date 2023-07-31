@@ -121,7 +121,7 @@ class Trainer:
             self._save_log(validation_history["metrics"], "validation_metrics.json")
             # TODO: Save configs
 
-            if self.stop_condition(train_loss, validation_loss):
+            if self.stop_condition and self.stop_condition(train_loss, validation_loss):
                 print("Stopping due to stop condition")
                 break
             

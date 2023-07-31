@@ -19,7 +19,7 @@ training:
   optimizer: sgd  # Optimizer
   loss: cross_entropy  # Loss function
   metrics: [accuracy]  # Metrics to evaluate
-  stop_condition: stop_patience  # Condition to stop training  
+  stop_condition: None  # Condition to stop training  
 
 testing:
   dataset: cifar10_test  # Dataset to use for testing

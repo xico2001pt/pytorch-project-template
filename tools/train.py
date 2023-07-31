@@ -47,7 +47,7 @@ def main():
     model = Model1(num_classes=10)
     loss = load_loss(loss)
     optimizer = load_optimizer(optimizer, model)
-    stop_condition = load_stop_condition(stop_condition)
+    stop_condition = None if stop_condition == "None" else load_stop_condition(stop_condition)
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
