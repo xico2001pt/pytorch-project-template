@@ -5,13 +5,13 @@ import json
 import os
 
 class Trainer:
-    def __init__(self, model, optimizer, loss_fn, device, log_path):
+    def __init__(self, model, optimizer, loss_fn, stop_condition, device, log_path):
         # TODO: Add configs
         # TODO: Add scheduler
-        # TODO: Add early stopping
         self.model = model
         self.optimizer = optimizer
         self.loss_fn = loss_fn
+        self.stop_condition = stop_condition
         self.device = device
         self.log_path = log_path
         self.checkpoints_path = os.path.join(log_path, "checkpoints")
@@ -120,6 +120,10 @@ class Trainer:
             self._save_log(validation_history["loss"], "validation_losses.json")
             self._save_log(validation_history["metrics"], "validation_metrics.json")
             # TODO: Save configs
+
+            if self.stop_condition(train_loss, validation_loss):
+                print("Stopping due to stop condition")
+                break
             
     def test(self, test_dataloader, metrics={}):
         test_loss, test_metrics = self._epoch_iteration(

@@ -12,14 +12,14 @@ trainer:
 
 training:
   dataset: cifar10_train  # Dataset to use for training
-  epochs: 2  # Number of training epochs
+  epochs: 20  # Number of training epochs
   num_workers: 4  # Number of workers for data loading
   batch_size: 32  # Training batch size
   train_split: 0.8  # Train/val split
   optimizer: sgd  # Optimizer
   loss: cross_entropy  # Loss function
   metrics: [accuracy]  # Metrics to evaluate
-  stop_condition: val_loss  # Condition to stop training  
+  stop_condition: stop_patience  # Condition to stop training  
 
 testing:
   dataset: cifar10_test  # Dataset to use for testing

@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import torch.nn as nn
 from trainers.trainer import Trainer
-from utils.loader import load_config, load_dataset, load_loss, load_optimizer
+from utils.loader import load_config, load_dataset, load_loss, load_optimizer, load_stop_condition
 
 def main():
     # TODO: Add argparse
@@ -29,7 +29,7 @@ def main():
     optimizer = trainig_config['optimizer']
     loss = trainig_config['loss']
     #metrics = trainig_config['metrics']
-    #stop_condition = trainig_config['stop_condition']
+    stop_condition = trainig_config['stop_condition']
 
     dataset = load_dataset(dataset_name)
 
@@ -44,11 +44,10 @@ def main():
         "Accuracy": lambda y_pred, y_true: (y_pred.argmax(dim=1) == y_true).float().mean()
     }
 
-    import torch.optim as optim
-
     model = Model1(num_classes=10)
     loss = load_loss(loss)
     optimizer = load_optimizer(optimizer, model)
+    stop_condition = load_stop_condition(stop_condition)
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -58,7 +57,7 @@ def main():
 
     log_path = os.path.join('logs', datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
 
-    trainer = Trainer(model, optimizer, loss, device=device, log_path=log_path)
+    trainer = Trainer(model, optimizer, loss, stop_condition, device=device, log_path=log_path)
 
     trainer.train(train_loader, validation_loader, epochs, metrics=metrics)
 

@@ -4,6 +4,7 @@ from glob import glob
 import importlib
 from core.losses import *
 from core.optimizers import *
+from core.stop_conditions import *
 
 def load_modules(path : str) -> list:
     modules = []
@@ -48,3 +49,11 @@ def load_optimizer(name : str, model):
     optimizer_args = optimizer_config['args']
 
     return globals()[optimizer_class](model.parameters(), **optimizer_args)
+
+def load_stop_condition(name : str):
+    stop_conditions_config = load_config('configs/stop_conditions.yaml')
+    stop_condition_config = stop_conditions_config[name]
+    stop_condition_class = stop_condition_config['class']
+    stop_condition_args = stop_condition_config['args']
+
+    return globals()[stop_condition_class](**stop_condition_args)
