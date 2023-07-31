@@ -4,6 +4,7 @@ import sys
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(BASE_DIR)
 
+from datetime import datetime
 import torch
 import torchvision
 from torch.utils.data import DataLoader, Subset
@@ -11,7 +12,7 @@ from models.model1 import Model1
 import matplotlib.pyplot as plt
 import numpy as np
 import torch.nn as nn
-from core.trainer import Trainer
+from trainers.trainer import Trainer
 from utils.loader import load_config, load_dataset, load_loss, load_optimizer
 
 def main():
@@ -55,8 +56,9 @@ def main():
 
     model.to(device)
 
-    # TODO: Create log folder with timestamp
-    trainer = Trainer(model, optimizer, loss, device=device, log_path='logs/')
+    log_path = os.path.join('logs', datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
+
+    trainer = Trainer(model, optimizer, loss, device=device, log_path=log_path)
 
     trainer.train(train_loader, validation_loader, epochs, metrics=metrics)
 

@@ -44,7 +44,6 @@ pytorch-project-template/
 │   ├── losses.py  # loss functions
 │   ├── metrics.py  # evaluation metrics
 │   ├── optimizers.py  # optimizers
-│   ├── trainer.py  # trainer class
 │   └── ...
 │
 ├── data/  # default directory for storing input data
@@ -76,7 +75,10 @@ pytorch-project-template/
 ├── tools/  # scripts for training, testing, etc.
 │   ├── test.py
 │   ├── train.py
-│   ├── trainer.py
+│   └── ...
+│
+├── trainers/  # contains the trainer definitions
+│   ├── trainer.py
 │   └── ...
 │
 ├── utils/  # utility functions

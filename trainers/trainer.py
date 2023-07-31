@@ -16,9 +16,6 @@ class Trainer:
         self.log_path = log_path
         self.checkpoints_path = os.path.join(log_path, "checkpoints")
 
-        if not os.path.exists(self.log_path):
-            os.makedirs(self.log_path)
-
         if not os.path.exists(self.checkpoints_path):
             os.makedirs(self.checkpoints_path)
     
