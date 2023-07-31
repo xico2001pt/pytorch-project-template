@@ -37,13 +37,17 @@ pytorch-project-template/
 │   ├── config.yaml
 │   ├── datasets.yaml
 │   ├── losses.yaml
-│   ├── metrics.yaml
+│   ├── optimizers.yaml
+│   ├── schedulers.yaml
+│   ├── stop_conditions.yaml
 │   └── ...
 │
 ├── core/  # contains the core functionality
 │   ├── losses.py  # loss functions
 │   ├── metrics.py  # evaluation metrics
 │   ├── optimizers.py  # optimizers
+│   ├── schedulers.py  # learning rate schedulers
+│   ├── stop_conditions.py  # stop conditions
 │   └── ...
 │
 ├── data/  # default directory for storing input data
