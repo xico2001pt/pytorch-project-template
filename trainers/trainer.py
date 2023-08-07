@@ -4,6 +4,7 @@ import numpy as np
 import json
 import os
 
+
 class Trainer:
     def __init__(self, model, loss_fn, device, log_path):
         # TODO: Add configs
@@ -14,21 +15,21 @@ class Trainer:
         self.checkpoints_path = os.path.join(log_path, "checkpoints")
 
         os.makedirs(self.checkpoints_path, exist_ok=True)
-    
+
     @staticmethod
-    def _print_epoch_stats(loss, metrics : dict, split_name : str):
+    def _print_epoch_stats(loss, metrics: dict, split_name: str):
         print(f"{split_name} Loss: {loss:.4f}")
         for metric in metrics:
             print(f"{split_name} {metric}: {metrics[metric]:.4f}")
-    
+
     def _save_checkpoint(self, filename, optimizer, epoch):
         save_dict = {
             "model": self.model.state_dict(),
             "optimizer": optimizer.state_dict(),
-            "epoch": epoch
+            "epoch": epoch,
         }
         torch.save(save_dict, os.path.join(self.checkpoints_path, filename))
-    
+
     def _save_log(self, obj, filename):
         json.dump(obj, open(os.path.join(self.log_path, filename), "w"))
 
@@ -37,11 +38,12 @@ class Trainer:
         loss = self.loss_fn(outputs, targets)
         return outputs, loss
 
-
-    def _epoch_iteration(self, dataloader, is_train=True, optimizer=None, metrics={}, description="Train"):
+    def _epoch_iteration(
+        self, dataloader, is_train=True, optimizer=None, metrics={}, description="Train"
+    ):
         if is_train:
             assert optimizer is not None, "optimizer must be provided for training"
-        
+
         num_batches = len(dataloader)
 
         self.model.train() if is_train else self.model.eval()
@@ -73,8 +75,17 @@ class Trainer:
             total_metrics[metric] /= num_batches
 
         return avg_loss, total_metrics
-    
-    def train(self, train_dataloader, validation_dataloader, num_epochs, optimizer, scheduler=None, stop_condition=None, metrics={}):
+
+    def train(
+        self,
+        train_dataloader,
+        validation_dataloader,
+        num_epochs,
+        optimizer,
+        scheduler=None,
+        stop_condition=None,
+        metrics={},
+    ):
         print(f"Training for {num_epochs} epochs")
 
         train_history = {"loss": [], "metrics": {metric: [] for metric in metrics}}
@@ -85,21 +96,21 @@ class Trainer:
             print(f"Epoch {epoch}/{num_epochs}")
 
             train_loss, train_metrics = self._epoch_iteration(
-                train_dataloader, 
-                is_train=True, 
+                train_dataloader,
+                is_train=True,
                 optimizer=optimizer,
                 metrics=metrics,
-                description="Train"
+                description="Train",
             )
 
             # TODO: If verbose
             Trainer._print_epoch_stats(train_loss, train_metrics, "Train")
 
             validation_loss, validation_metrics = self._epoch_iteration(
-                validation_dataloader, 
-                is_train=False, 
+                validation_dataloader,
+                is_train=False,
                 metrics=metrics,
-                description="Validation"
+                description="Validation",
             )
 
             Trainer._print_epoch_stats(validation_loss, validation_metrics, "Validation")
@@ -126,16 +137,13 @@ class Trainer:
             if stop_condition and stop_condition(train_loss, validation_loss):
                 print("Stopping due to stop condition")
                 break
-            
+
             if scheduler:
                 scheduler.step()
-            
+
     def test(self, test_dataloader, metrics={}):
         test_loss, test_metrics = self._epoch_iteration(
-            test_dataloader,
-            is_train=False, 
-            metrics=metrics,
-            description="Test"
+            test_dataloader, is_train=False, metrics=metrics, description="Test"
         )
 
         Trainer._print_epoch_stats(test_loss, test_metrics, "Test")

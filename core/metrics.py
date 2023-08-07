@@ -1,5 +1,6 @@
 from torch import nn
 
+
 class AccuracyMetric(nn.Module):
     def __init__(self):
         super().__init__()

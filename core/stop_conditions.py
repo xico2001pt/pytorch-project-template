@@ -4,7 +4,7 @@ class StopPatience:
         self.delta = delta
         self.best = float("inf")
         self.counter = 0
-    
+
     def __call__(self, train_loss, validation_loss):
         if validation_loss < self.best - self.delta:
             self.best = validation_loss
