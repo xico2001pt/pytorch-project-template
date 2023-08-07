@@ -11,42 +11,52 @@ from models.model1 import Model1
 from trainers.trainer import Trainer
 from utils.loader import load_config, load_dataset, load_loss, load_optimizer, load_scheduler, load_stop_condition
 
+def _load_train_data(training_config):
+    dataset_name = training_config['dataset']
+    optimizer_name = training_config['optimizer']
+    loss_name = training_config['loss']
+    #TODO:  # metrics = training_config['metrics']
+    scheduler_name = training_config['scheduler']
+    stop_condition_name = training_config['stop_condition']
+
+    dataset = load_dataset(dataset_name)
+    model = Model1(num_classes=10)  # TODO: Implement model
+    optimizer = load_optimizer(optimizer_name, model)
+    loss = load_loss(loss_name)
+    metrics = {  # TODO: Implement metrics
+        "Accuracy": lambda y_pred, y_true: (y_pred.argmax(dim=1) == y_true).float().mean()
+    }
+    scheduler = None if scheduler == "None" else load_scheduler(scheduler_name, optimizer)
+    stop_condition = None if stop_condition == "None" else load_stop_condition(stop_condition_name)
+
+    return {
+        "dataset": dataset,
+        "model": model, 
+        "optimizer": optimizer,
+        "loss": loss,
+        "metrics": metrics,
+        "scheduler": scheduler,
+        "stop_condition": stop_condition,
+        "epochs": training_config['epochs'],
+        "num_workers": training_config['num_workers'],
+        "batch_size": training_config['batch_size'],
+        #TODO:  # train_split = training_config['train_split']
+
+    }
+
 def main():
     # TODO: Add argparse
     config = load_config('configs/config.yaml')
 
-    trainig_config = config['training']
-
-    # TODO: One time use should be inlined
-    dataset_name = trainig_config['dataset']
-    epochs = trainig_config['epochs']
-    num_workers = trainig_config['num_workers']
-    batch_size = trainig_config['batch_size']
-    #train_split = trainig_config['train_split']
-    optimizer = trainig_config['optimizer']
-    loss = trainig_config['loss']
-    #metrics = trainig_config['metrics']
-    scheduler = trainig_config['scheduler']
-    stop_condition = trainig_config['stop_condition']
-
-    dataset = load_dataset(dataset_name)
+    training_config = config['training']
+    
+    dataset, model, optimizer, loss, metrics, scheduler, stop_condition, epochs, num_workers, batch_size = _load_train_data(training_config)
 
     train_dataset = Subset(dataset, range(5000, len(dataset)))
     validation_dataset = Subset(dataset, range(5000))
 
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers)
     validation_loader = DataLoader(validation_dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers)
-    
-
-    metrics = {
-        "Accuracy": lambda y_pred, y_true: (y_pred.argmax(dim=1) == y_true).float().mean()
-    }
-
-    model = Model1(num_classes=10)
-    loss = load_loss(loss)
-    optimizer = load_optimizer(optimizer, model)
-    scheduler = None if scheduler == "None" else load_scheduler(scheduler, optimizer)
-    stop_condition = None if stop_condition == "None" else load_stop_condition(stop_condition)
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
