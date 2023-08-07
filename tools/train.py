@@ -9,13 +9,13 @@ import torch
 from torch.utils.data import DataLoader, Subset
 from models.model1 import Model1
 from trainers.trainer import Trainer
-from utils.loader import load_config, load_dataset, load_loss, load_optimizer, load_scheduler, load_stop_condition
+from utils.loader import load_config, load_dataset, load_loss, load_metrics, load_optimizer, load_scheduler, load_stop_condition
 
 def _load_train_data(training_config):
     dataset_name = training_config['dataset']
     optimizer_name = training_config['optimizer']
     loss_name = training_config['loss']
-    #TODO:  # metrics = training_config['metrics']
+    metrics_names = training_config['metrics']
     scheduler_name = training_config['scheduler']
     stop_condition_name = training_config['stop_condition']
 
@@ -23,11 +23,9 @@ def _load_train_data(training_config):
     model = Model1(num_classes=10)  # TODO: Implement model
     optimizer = load_optimizer(optimizer_name, model)
     loss = load_loss(loss_name)
-    metrics = {  # TODO: Implement metrics
-        "Accuracy": lambda y_pred, y_true: (y_pred.argmax(dim=1) == y_true).float().mean()
-    }
-    scheduler = None if scheduler == "None" else load_scheduler(scheduler_name, optimizer)
-    stop_condition = None if stop_condition == "None" else load_stop_condition(stop_condition_name)
+    metrics = load_metrics(metrics_names)
+    scheduler = None if scheduler_name == "None" else load_scheduler(scheduler_name, optimizer)
+    stop_condition = None if stop_condition_name == "None" else load_stop_condition(stop_condition_name)
 
     return {
         "dataset": dataset,
@@ -49,8 +47,9 @@ def main():
     config = load_config('configs/config.yaml')
 
     training_config = config['training']
-    
-    dataset, model, optimizer, loss, metrics, scheduler, stop_condition, epochs, num_workers, batch_size = _load_train_data(training_config)
+    data = _load_train_data(training_config)
+
+    dataset, model, optimizer, loss, metrics, scheduler, stop_condition, epochs, num_workers, batch_size = data.values()
 
     train_dataset = Subset(dataset, range(5000, len(dataset)))
     validation_dataset = Subset(dataset, range(5000))

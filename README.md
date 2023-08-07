@@ -37,6 +37,7 @@ pytorch-project-template/
 │   ├── config.yaml
 │   ├── datasets.yaml
 │   ├── losses.yaml
+│   ├── metrics.yaml
 │   ├── optimizers.yaml
 │   ├── schedulers.yaml
 │   ├── stop_conditions.yaml

@@ -3,6 +3,7 @@ import os
 from glob import glob
 import importlib
 from core.losses import *
+from core.metrics import *
 from core.optimizers import *
 from core.schedulers import *
 from core.stop_conditions import *
@@ -42,6 +43,18 @@ def load_loss(name : str):
     loss_args = loss_config['args']
 
     return globals()[loss_class](**loss_args)
+
+def load_metrics(names : list):
+    metrics_config = load_config('configs/metrics.yaml')
+    metrics = {}
+    for name in names:
+        metric_config = metrics_config[name]
+        metric_class = metric_config['class']
+        metric_args = metric_config['args']
+
+        metrics[name] = globals()[metric_class](**metric_args)
+    return metrics
+
 
 def load_optimizer(name : str, model):
     optimizers_config = load_config('configs/optimizers.yaml')
