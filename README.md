@@ -42,7 +42,7 @@ pytorch-project-template/
 │   ├── stop_conditions.yaml
 │   └── ...
 │
-├── core/  # contains the core functionality
+├── core/  # contains the core functionalities
 │   ├── losses.py  # loss functions
 │   ├── metrics.py  # evaluation metrics
 │   ├── optimizers.py  # optimizers

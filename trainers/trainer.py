@@ -5,20 +5,15 @@ import json
 import os
 
 class Trainer:
-    def __init__(self, model, optimizer, loss_fn, scheduler, stop_condition, device, log_path):
+    def __init__(self, model, loss_fn, device, log_path):
         # TODO: Add configs
-        # TODO: train params should not be in constructor
         self.model = model
-        self.optimizer = optimizer
         self.loss_fn = loss_fn
-        self.scheduler = scheduler
-        self.stop_condition = stop_condition
         self.device = device
         self.log_path = log_path
         self.checkpoints_path = os.path.join(log_path, "checkpoints")
 
-        if not os.path.exists(self.checkpoints_path):
-            os.makedirs(self.checkpoints_path)
+        os.makedirs(self.checkpoints_path, exist_ok=True)
     
     @staticmethod
     def _print_epoch_stats(loss, metrics : dict, split_name : str):
@@ -26,10 +21,10 @@ class Trainer:
         for metric in metrics:
             print(f"{split_name} {metric}: {metrics[metric]:.4f}")
     
-    def _save_checkpoint(self, filename, epoch):
+    def _save_checkpoint(self, filename, optimizer, epoch):
         save_dict = {
             "model": self.model.state_dict(),
-            "optimizer": self.optimizer.state_dict(),
+            "optimizer": optimizer.state_dict(),
             "epoch": epoch
         }
         torch.save(save_dict, os.path.join(self.checkpoints_path, filename))
@@ -37,9 +32,15 @@ class Trainer:
     def _save_log(self, obj, filename):
         json.dump(obj, open(os.path.join(self.log_path, filename), "w"))
 
-    def _epoch_iteration(self, dataloader, is_train=True, metrics={}, description="Train"):
+    def _compute_loss(self, inputs, targets):
+        outputs = self.model(inputs)
+        loss = self.loss_fn(outputs, targets)
+        return outputs, loss
+
+
+    def _epoch_iteration(self, dataloader, is_train=True, optimizer=None, metrics={}, description="Train"):
         if is_train:
-            assert self.optimizer is not None, "optimizer must be provided for training"
+            assert optimizer is not None, "optimizer must be provided for training"
         
         num_batches = len(dataloader)
 
@@ -53,14 +54,13 @@ class Trainer:
                 inputs, targets = inputs.to(self.device), targets.to(self.device)
 
                 if is_train:
-                    self.optimizer.zero_grad()
+                    optimizer.zero_grad()
 
-                outputs = self.model(inputs)
-                loss = self.loss_fn(outputs, targets)
+                outputs, loss = self._compute_loss(inputs, targets)
 
                 if is_train:
                     loss.backward()
-                    self.optimizer.step()
+                    optimizer.step()
 
                 total_loss += loss.item()
 
@@ -74,7 +74,7 @@ class Trainer:
 
         return avg_loss, total_metrics
     
-    def train(self, train_dataloader, validation_dataloader, num_epochs, metrics={}):
+    def train(self, train_dataloader, validation_dataloader, num_epochs, optimizer, scheduler=None, stop_condition=None, metrics={}):
         print(f"Training for {num_epochs} epochs")
 
         train_history = {"loss": [], "metrics": {metric: [] for metric in metrics}}
@@ -87,6 +87,7 @@ class Trainer:
             train_loss, train_metrics = self._epoch_iteration(
                 train_dataloader, 
                 is_train=True, 
+                optimizer=optimizer,
                 metrics=metrics,
                 description="Train"
             )
@@ -105,9 +106,9 @@ class Trainer:
 
             if validation_loss < best_validation_loss:
                 best_validation_loss = validation_loss
-                self._save_checkpoint("best_checkpoint.pth", epoch)
+                self._save_checkpoint("best_checkpoint.pth", optimizer, epoch)
 
-            self._save_checkpoint("latest_checkpoint.pth", epoch)
+            self._save_checkpoint("latest_checkpoint.pth", optimizer, epoch)
 
             train_history["loss"].append(train_loss)
             validation_history["loss"].append(validation_loss)
@@ -122,12 +123,12 @@ class Trainer:
             self._save_log(validation_history["metrics"], "validation_metrics.json")
             # TODO: Save configs
 
-            if self.stop_condition and self.stop_condition(train_loss, validation_loss):
+            if stop_condition and stop_condition(train_loss, validation_loss):
                 print("Stopping due to stop condition")
                 break
             
-            if self.scheduler:
-                self.scheduler.step()
+            if scheduler:
+                scheduler.step()
             
     def test(self, test_dataloader, metrics={}):
         test_loss, test_metrics = self._epoch_iteration(

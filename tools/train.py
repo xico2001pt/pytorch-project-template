@@ -48,7 +48,7 @@ def main():
     scheduler = None if scheduler == "None" else load_scheduler(scheduler, optimizer)
     stop_condition = None if stop_condition == "None" else load_stop_condition(stop_condition)
 
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     print(f"Using device: {device}")
 
@@ -56,9 +56,9 @@ def main():
 
     log_path = os.path.join('logs', datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
 
-    trainer = Trainer(model, optimizer, loss, scheduler, stop_condition, device=device, log_path=log_path)
+    trainer = Trainer(model, loss, device=device, log_path=log_path)
 
-    trainer.train(train_loader, validation_loader, epochs, metrics=metrics)
+    trainer.train(train_loader, validation_loader, epochs, optimizer, scheduler=scheduler, stop_condition=stop_condition, metrics=metrics)
 
     print("Finished Training")
 
