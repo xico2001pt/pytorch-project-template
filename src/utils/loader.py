@@ -1,6 +1,5 @@
 import yaml
 import os
-from glob import glob
 import importlib
 from src.core.losses import *
 from src.core.metrics import *
@@ -20,7 +19,7 @@ def load_modules(path: str) -> list:
 
         if os.path.isdir(item_path):
             modules.extend(load_modules(item_path))
-        elif os.path.isfile(item_path) and item.endswith('.py'):
+        elif os.path.isfile(item_path) and item.endswith(".py"):
             module_name = os.path.splitext(item)[0]
             module = importlib.import_module(f"{dot_path}.{module_name}")
             modules.append(module)

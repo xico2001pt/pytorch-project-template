@@ -2,6 +2,7 @@ model: model1  # Name of model
 
 trainer:
   log_path: logs/  # Path to save logs
+  weights_path: weights/  # Path to save weights
   verbose: true  # Print logs on console
   save_freq: 10  # Save model every save_freq epochs. If 0, only the best model is saved
 
@@ -10,7 +11,7 @@ train:
   epochs: 20  # Number of training epochs
   num_workers: 4  # Number of workers for data loading
   batch_size: 32  # Training batch size
-  train_val_split: 0.8  # Train/val split
+  train_val_split: 0.9  # Train/val split
   optimizer: sgd  # Optimizer
   loss: cross_entropy  # Loss function
   metrics: [accuracy]  # Metrics to evaluate

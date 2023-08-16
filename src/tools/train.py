@@ -52,7 +52,7 @@ def _load_train_data(training_config, model):
         "epochs": training_config["epochs"],
         "num_workers": training_config["num_workers"],
         "batch_size": training_config["batch_size"],
-        # TODO:  # train_split = training_config['train_split']
+        "train_val_split": training_config["train_val_split"],
     }
 
 
@@ -74,10 +74,14 @@ def main():
         epochs,
         num_workers,
         batch_size,
+        train_val_split,
     ) = data.values()
 
-    train_dataset = Subset(dataset, range(5000, len(dataset)))
-    validation_dataset = Subset(dataset, range(5000))
+    train_size = int(train_val_split * len(dataset))
+    validation_size = len(dataset) - train_size
+    train_dataset, validation_dataset = torch.utils.data.random_split(
+        dataset, [train_size, validation_size]
+    )
 
     train_loader = DataLoader(
         train_dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers

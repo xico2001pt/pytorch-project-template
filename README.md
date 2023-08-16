@@ -32,7 +32,6 @@ pip install -r requirements.txt
 
 ```python
 pytorch-project-template/
-│
 ├── configs/  # holds the configuration files
 │   ├── config.yaml
 │   ├── datasets.yaml
@@ -51,14 +50,12 @@ pytorch-project-template/
 │   │   ├── checkpoints/  # model checkpoints
 │   │   │   ├── best_checkpoint.pth  # best model checkpoint
 │   │   │   └── latest_checkpoint.pth  # latest model checkpoint
-│   │   │
 │   │   ├── train_losses.json  # train losses
 │   │   ├── train_metrics.json  # train metrics
 │   │   ├── validation_losses.json  # validation losses
 │   │   ├── validation_metrics.json  # validation metrics
 │   │   ├── test_loss.json  # test loss
 │   │   └── test_metrics.json  # test metrics
-│   │
 │   └── ...
 |── src/  # source code
 │   ├── core/  # contains the core functionalities
