@@ -37,6 +37,7 @@ pytorch-project-template/
 │   ├── datasets.yaml
 │   ├── losses.yaml
 │   ├── metrics.yaml
+│   ├── models.yaml
 │   ├── optimizers.yaml
 │   ├── schedulers.yaml
 │   ├── stop_conditions.yaml
@@ -57,7 +58,7 @@ pytorch-project-template/
 │   │   ├── test_loss.json  # test loss
 │   │   └── test_metrics.json  # test metrics
 │   └── ...
-|── src/  # source code
+│── src/  # source code
 │   ├── core/  # contains the core functionalities
 │   │   ├── losses.py  # loss functions
 │   │   ├── metrics.py  # evaluation metrics
