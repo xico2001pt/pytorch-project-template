@@ -1,0 +1,4 @@
+model1:
+  class: Model1
+  args:
+    num_classes: 10

@@ -19,6 +19,7 @@ def load_modules(path: str) -> list:
 
 
 dataset_modules = load_modules("datasets")
+model_modules = load_modules("models")
 
 
 def load_config(path: str) -> dict:
@@ -38,6 +39,20 @@ def load_dataset(name: str):
         if hasattr(module, dataset_class):
             dataset_obj = getattr(module, dataset_class)
             return dataset_obj(**dataset_args)
+    return None
+
+
+def load_model(name: str):
+    models_config = load_config("configs/models.yaml")
+    model_config = models_config[name]
+    model_class = model_config["class"]
+    model_args = model_config["args"]
+
+    model_obj = None
+    for module in model_modules:
+        if hasattr(module, model_class):
+            model_obj = getattr(module, model_class)
+            return model_obj(**model_args)
     return None
 
 

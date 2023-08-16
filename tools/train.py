@@ -7,6 +7,7 @@ sys.path.append(BASE_DIR)
 from utils.loader import (
     load_config,
     load_dataset,
+    load_model,
     load_loss,
     load_metrics,
     load_optimizer,
@@ -20,7 +21,7 @@ from datetime import datetime
 import torch
 
 
-def _load_train_data(training_config):
+def _load_train_data(training_config, model):
     dataset_name = training_config["dataset"]
     optimizer_name = training_config["optimizer"]
     loss_name = training_config["loss"]
@@ -29,7 +30,6 @@ def _load_train_data(training_config):
     stop_condition_name = training_config["stop_condition"]
 
     dataset = load_dataset(dataset_name)
-    model = Model1(num_classes=10)  # TODO: Implement model
     optimizer = load_optimizer(optimizer_name, model)
     loss = load_loss(loss_name)
     metrics = load_metrics(metrics_names)
@@ -44,7 +44,6 @@ def _load_train_data(training_config):
 
     return {
         "dataset": dataset,
-        "model": model,
         "optimizer": optimizer,
         "loss": loss,
         "metrics": metrics,
@@ -61,11 +60,12 @@ def main():
     # TODO: Add argparse
     config = load_config("configs/config.yaml")
 
-    training_config = config["training"]
-    data = _load_train_data(training_config)
+    model = load_model(config["model"])
+
+    training_config = config["train"]
+    data = _load_train_data(training_config, model)
     (
         dataset,
-        model,
         optimizer,
         loss,
         metrics,
