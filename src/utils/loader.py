@@ -2,24 +2,34 @@ import yaml
 import os
 from glob import glob
 import importlib
-from core.losses import *
-from core.metrics import *
-from core.optimizers import *
-from core.schedulers import *
-from core.stop_conditions import *
+from src.core.losses import *
+from src.core.metrics import *
+from src.core.optimizers import *
+from src.core.schedulers import *
+from src.core.stop_conditions import *
 
 
 def load_modules(path: str) -> list:
     modules = []
-    for file in glob(os.path.join(path, "*.py")):
-        name = os.path.splitext(os.path.basename(file))[0]
-        name = f"{path}.{name}"
-        modules.append(importlib.import_module(name))
+    items = os.listdir(path)
+    # Path with dots
+    dot_path = path.replace("/", ".")
+
+    for item in items:
+        item_path = os.path.join(path, item)
+
+        if os.path.isdir(item_path):
+            modules.extend(load_modules(item_path))
+        elif os.path.isfile(item_path) and item.endswith('.py'):
+            module_name = os.path.splitext(item)[0]
+            module = importlib.import_module(f"{dot_path}.{module_name}")
+            modules.append(module)
+
     return modules
 
 
-dataset_modules = load_modules("datasets")
-model_modules = load_modules("models")
+dataset_modules = load_modules("src/datasets")
+model_modules = load_modules("src/models")
 
 
 def load_config(path: str) -> dict:
