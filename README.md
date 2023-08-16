@@ -42,25 +42,10 @@ pytorch-project-template/
 │   ├── schedulers.yaml
 │   ├── stop_conditions.yaml
 │   └── ...
-│
-├── core/  # contains the core functionalities
-│   ├── losses.py  # loss functions
-│   ├── metrics.py  # evaluation metrics
-│   ├── optimizers.py  # optimizers
-│   ├── schedulers.py  # learning rate schedulers
-│   ├── stop_conditions.py  # stop conditions
-│   └── ...
-│
 ├── data/  # default directory for storing input data
 │   └── ...
-│
-├── datasets/  # contains the dataset definitions
-│   ├── dataset1.py
-│   └── ...
-│
 ├── docs/  # documentation files
 │   └── ...
-│
 ├── logs/  # default directory for storing logs
 │   ├── YYYY-MM-DD-HH-MM-SS/  # training logs
 │   │   ├── checkpoints/  # model checkpoints
@@ -75,30 +60,35 @@ pytorch-project-template/
 │   │   └── test_metrics.json  # test metrics
 │   │
 │   └── ...
-│
-├── models/  # contains the model definitions
-│   ├── model1.py
-│   └── ...
-│
-├── tools/  # scripts for training, testing, etc.
-│   ├── deploy.py
-│   ├── visualize.py
-│   ├── test.py
-│   ├── train.py
-│   └── ...
-│
-├── trainers/  # contains the trainer definitions
-│   ├── trainer.py
-│   └── ...
-│
-├── utils/  # utility functions
-│   ├── loader.py  # utility functions for loading data using the configurations
-│   ├── utils.py
-│   └── ...
-│
+|── src/  # source code
+│   ├── core/  # contains the core functionalities
+│   │   ├── losses.py  # loss functions
+│   │   ├── metrics.py  # evaluation metrics
+│   │   ├── optimizers.py  # optimizers
+│   │   ├── schedulers.py  # learning rate schedulers
+│   │   ├── stop_conditions.py  # stop conditions
+│   │   └── ...
+│   ├── datasets/  # contains the dataset definitions
+│   │   ├── dataset1.py
+│   │   └── ...
+│   ├── models/  # contains the model definitions
+│   │   ├── model1.py
+│   │   └── ...
+│   ├── tools/  # scripts for training, testing, etc.
+│   │   ├── deploy.py
+│   │   ├── visualize.py
+│   │   ├── test.py
+│   │   ├── train.py
+│   │   └── ...
+│   ├── trainers/  # contains the trainer definitions
+│   │   ├── trainer.py
+│   │   └── ...
+│   ├── utils/  # utility functions
+│   │   ├── loader.py  # utility functions for loading data using the configurations
+│   │   ├── utils.py
+│   │   └── ...
+│   └── ...
 ├── weights/  # default directory for storing model weights
-│   └── ...
-│
 └── requirements.txt  # project dependencies
 ```
 
