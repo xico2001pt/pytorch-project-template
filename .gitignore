@@ -15,11 +15,11 @@ __pycache__/
 
 # Logs
 logs/
-*.log
+*/*.log
 
 # Data
 data/
 
 # Model Weights
 weights/
-*.pth
+*/*.pth
