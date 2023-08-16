@@ -1,10 +1,10 @@
 import os
 import sys
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.append(BASE_DIR)
 
-from utils.loader import (
+from src.utils.loader import (
     load_config,
     load_dataset,
     load_model,
@@ -14,8 +14,8 @@ from utils.loader import (
     load_scheduler,
     load_stop_condition,
 )
-from trainers.trainer import Trainer
-from models.model1 import Model1
+from src.trainers.trainer import Trainer
+from src.models.model1 import Model1
 from torch.utils.data import DataLoader, Subset
 from datetime import datetime
 import torch
