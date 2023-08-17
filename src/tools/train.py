@@ -4,16 +4,7 @@ import sys
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.append(BASE_DIR)
 
-from src.utils.loader import (
-    load_config,
-    load_dataset,
-    load_model,
-    load_loss,
-    load_metrics,
-    load_optimizer,
-    load_scheduler,
-    load_stop_condition,
-)
+from src.utils.loader import Loader
 from src.trainers.trainer import Trainer
 from src.models.model1 import Model1
 from torch.utils.data import DataLoader, Subset
@@ -21,7 +12,7 @@ from datetime import datetime
 import torch
 
 
-def _load_train_data(training_config, model):
+def _load_train_data(loader, training_config, model):
     dataset_name = training_config["dataset"]
     optimizer_name = training_config["optimizer"]
     loss_name = training_config["loss"]
@@ -29,17 +20,19 @@ def _load_train_data(training_config, model):
     scheduler_name = training_config["scheduler"]
     stop_condition_name = training_config["stop_condition"]
 
-    dataset = load_dataset(dataset_name)
-    optimizer = load_optimizer(optimizer_name, model)
-    loss = load_loss(loss_name)
-    metrics = load_metrics(metrics_names)
+    dataset = loader.load_dataset(dataset_name)
+    optimizer = loader.load_optimizer(optimizer_name, model)
+    loss = loader.load_loss(loss_name)
+    metrics = loader.load_metrics(metrics_names)
     scheduler = (
-        None if scheduler_name == "None" else load_scheduler(scheduler_name, optimizer)
+        None
+        if scheduler_name == "None"
+        else loader.load_scheduler(scheduler_name, optimizer)
     )
     stop_condition = (
         None
         if stop_condition_name == "None"
-        else load_stop_condition(stop_condition_name)
+        else loader.load_stop_condition(stop_condition_name)
     )
 
     return {
@@ -58,12 +51,14 @@ def _load_train_data(training_config, model):
 
 def main():
     # TODO: Add argparse
-    config = load_config("configs/config.yaml")
+    loader = Loader(BASE_DIR)
 
-    model = load_model(config["model"])
+    config = loader.load_config("configs/config.yaml")
+
+    model = loader.load_model(config["model"])
 
     training_config = config["train"]
-    data = _load_train_data(training_config, model)
+    data = _load_train_data(loader, training_config, model)
     (
         dataset,
         optimizer,
