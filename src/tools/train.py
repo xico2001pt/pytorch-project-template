@@ -40,6 +40,22 @@ def _load_train_data(loader, training_config, model):
     }
 
 
+def _get_dataloaders(dataset, batch_size, num_workers, train_val_split):
+    train_size = int(train_val_split * len(dataset))
+    validation_size = len(dataset) - train_size
+    train_dataset, validation_dataset = torch.utils.data.random_split(dataset, [train_size, validation_size])
+
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers)
+    validation_loader = DataLoader(
+        validation_dataset,
+        batch_size=batch_size,
+        shuffle=False,
+        num_workers=num_workers,
+    )
+
+    return train_loader, validation_loader
+
+
 def main():
     # TODO: Add argparse
     loader = Loader(BASE_DIR)
@@ -63,21 +79,7 @@ def main():
         train_val_split,
     ) = data.values()
 
-    train_size = int(train_val_split * len(dataset))
-    validation_size = len(dataset) - train_size
-    train_dataset, validation_dataset = torch.utils.data.random_split(
-        dataset, [train_size, validation_size]
-    )
-
-    train_loader = DataLoader(
-        train_dataset, batch_size=batch_size, shuffle=True, num_workers=num_workers
-    )
-    validation_loader = DataLoader(
-        validation_dataset,
-        batch_size=batch_size,
-        shuffle=False,
-        num_workers=num_workers,
-    )
+    train_loader, validation_loader = _get_dataloaders(dataset, batch_size, num_workers, train_val_split)
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
