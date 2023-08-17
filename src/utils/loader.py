@@ -29,14 +29,22 @@ class Loader:
 
         return modules
 
-    def load_config(self, path: str) -> dict:
+    def _load_config(self, configs: str | dict, name: str, module: dict, custom_args: dict = {}):
+        configs = self.load_config_file(configs) if isinstance(configs, str) else configs
+        config = configs[name]
+        config_class = config["class"]
+        config_args = config["args"]
+
+        return module.__dict__[config_class](**custom_args, **config_args)
+
+    def load_config_file(self, path: str) -> dict:
         path = os.path.join(self.base_dir, path)
         with open(path, "r") as f:
             config = yaml.safe_load(f)
         return config
 
     def load_dataset(self, name: str):
-        datasets_config = self.load_config("configs/datasets.yaml")
+        datasets_config = self.load_config_file("configs/datasets.yaml")
         dataset_config = datasets_config[name]
         dataset_class = dataset_config["class"]
         dataset_args = dataset_config["args"]
@@ -49,7 +57,7 @@ class Loader:
         return None
 
     def load_model(self, name: str):
-        models_config = self.load_config("configs/models.yaml")
+        models_config = self.load_config_file("configs/models.yaml")
         model_config = models_config[name]
         model_class = model_config["class"]
         model_args = model_config["args"]
@@ -62,44 +70,20 @@ class Loader:
         return None
 
     def load_loss(self, name: str):
-        losses_config = self.load_config("configs/losses.yaml")
-        loss_config = losses_config[name]
-        loss_class = loss_config["class"]
-        loss_args = loss_config["args"]
-
-        return losses.__dict__[loss_class](**loss_args)
+        return self._load_config("configs/losses.yaml", name, losses)
 
     def load_metrics(self, names: list):
-        metrics_config = self.load_config("configs/metrics.yaml")
+        metrics_config = self.load_config_file("configs/metrics.yaml")
         metrics_dict = {}
         for name in names:
-            metric_config = metrics_config[name]
-            metric_class = metric_config["class"]
-            metric_args = metric_config["args"]
-
-            metrics_dict[name] = metrics.__dict__[metric_class](**metric_args)
+            metrics_dict[name] = self._load_config(metrics_config, name, metrics)
         return metrics_dict
 
     def load_optimizer(self, name: str, model):
-        optimizers_config = self.load_config("configs/optimizers.yaml")
-        optimizer_config = optimizers_config[name]
-        optimizer_class = optimizer_config["class"]
-        optimizer_args = optimizer_config["args"]
-
-        return optimizers.__dict__[optimizer_class](model.parameters(), **optimizer_args)
+        return self._load_config("configs/optimizers.yaml", name, optimizers, {"params": model.parameters()})
 
     def load_scheduler(self, name: str, optimizer):
-        schedulers_config = self.load_config("configs/schedulers.yaml")
-        scheduler_config = schedulers_config[name]
-        scheduler_class = scheduler_config["class"]
-        scheduler_args = scheduler_config["args"]
-
-        return schedulers.__dict__[scheduler_class](optimizer, **scheduler_args)
+        return self._load_config("configs/schedulers.yaml", name, schedulers, {"optimizer": optimizer})
 
     def load_stop_condition(self, name: str):
-        stop_conditions_config = self.load_config("configs/stop_conditions.yaml")
-        stop_condition_config = stop_conditions_config[name]
-        stop_condition_class = stop_condition_config["class"]
-        stop_condition_args = stop_condition_config["args"]
-
-        return stop_conditions.__dict__[stop_condition_class](**stop_condition_args)
+        return self._load_config("configs/stop_conditions.yaml", name, stop_conditions)

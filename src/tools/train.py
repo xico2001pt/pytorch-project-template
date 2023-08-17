@@ -53,7 +53,7 @@ def main():
     # TODO: Add argparse
     loader = Loader(BASE_DIR)
 
-    config = loader.load_config("configs/config.yaml")
+    config = loader.load_config_file("configs/config.yaml")
 
     model = loader.load_model(config["model"])
 
