@@ -6,8 +6,7 @@ sys.path.append(BASE_DIR)
 
 from src.utils.loader import Loader
 from src.trainers.trainer import Trainer
-from src.models.model1 import Model1
-from torch.utils.data import DataLoader, Subset
+from torch.utils.data import DataLoader
 from datetime import datetime
 import torch
 
@@ -24,16 +23,8 @@ def _load_train_data(loader, training_config, model):
     optimizer = loader.load_optimizer(optimizer_name, model)
     loss = loader.load_loss(loss_name)
     metrics = loader.load_metrics(metrics_names)
-    scheduler = (
-        None
-        if scheduler_name == "None"
-        else loader.load_scheduler(scheduler_name, optimizer)
-    )
-    stop_condition = (
-        None
-        if stop_condition_name == "None"
-        else loader.load_stop_condition(stop_condition_name)
-    )
+    scheduler = loader.load_scheduler(scheduler_name, optimizer)
+    stop_condition = loader.load_stop_condition(stop_condition_name)
 
     return {
         "dataset": dataset,

@@ -83,7 +83,11 @@ class Loader:
         return self._load_config("configs/optimizers.yaml", name, optimizers, {"params": model.parameters()})
 
     def load_scheduler(self, name: str, optimizer):
+        if name == "None":
+            return None
         return self._load_config("configs/schedulers.yaml", name, schedulers, {"optimizer": optimizer})
 
     def load_stop_condition(self, name: str):
+        if name == "None":
+            return None
         return self._load_config("configs/stop_conditions.yaml", name, stop_conditions)
