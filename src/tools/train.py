@@ -87,7 +87,7 @@ def main():
 
     model.to(device)
 
-    log_path = os.path.join("logs", datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
+    log_path = os.path.join(BASE_DIR, "logs", datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
 
     trainer = Trainer(model, loss, device=device, log_path=log_path)
 
