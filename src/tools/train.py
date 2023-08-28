@@ -1,14 +1,15 @@
 import os
 import sys
+import torch
+import argparse
+from datetime import datetime
+from torch.utils.data import DataLoader
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.append(BASE_DIR)
 
 from src.utils.loader import Loader
 from src.trainers.trainer import Trainer
-from torch.utils.data import DataLoader
-from datetime import datetime
-import torch
 
 CONFIGS_DIR = os.path.join(BASE_DIR, "configs")
 LOGS_DIR = os.path.join(BASE_DIR, "logs")
@@ -59,11 +60,11 @@ def _get_dataloaders(dataset, batch_size, num_workers, train_val_split):
     return train_loader, validation_loader
 
 
-def main():
+def main(args):
     # TODO: Add argparse
     loader = Loader(CONFIGS_DIR)
 
-    config = loader.load_config_file("config.yaml")
+    config = loader.load_config_file(args.config)
 
     model = loader.load_model(config["model"])
 
@@ -108,4 +109,8 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    args = argparse.ArgumentParser()
+    args.add_argument("--config", type=str, default="config.yaml", help="Path to config file")
+    args = args.parse_args()
+
+    main(args)
