@@ -10,6 +10,9 @@ from torch.utils.data import DataLoader
 from datetime import datetime
 import torch
 
+CONFIGS_DIR = os.path.join(BASE_DIR, "configs")
+LOGS_DIR = os.path.join(BASE_DIR, "logs")
+
 
 def _load_train_data(loader, training_config, model):
     dataset_name = training_config["dataset"]
@@ -58,7 +61,7 @@ def _get_dataloaders(dataset, batch_size, num_workers, train_val_split):
 
 def main():
     # TODO: Add argparse
-    loader = Loader(os.path.join(BASE_DIR, "configs"))
+    loader = Loader(CONFIGS_DIR)
 
     config = loader.load_config_file("config.yaml")
 
@@ -87,7 +90,7 @@ def main():
 
     model.to(device)
 
-    log_path = os.path.join(BASE_DIR, "logs", datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
+    log_path = os.path.join(LOGS_DIR, datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
 
     trainer = Trainer(model, loss, device=device, log_path=log_path)
 
