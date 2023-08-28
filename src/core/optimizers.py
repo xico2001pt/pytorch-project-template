@@ -1,11 +1,11 @@
 from torch.optim import SGD, Adam
 
 
-class SGD(SGD):
+class SGDOptimizer(SGD):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
 
-class Adam(Adam):
+class AdamOptimizer(Adam):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

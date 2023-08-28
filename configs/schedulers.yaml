@@ -1,4 +1,4 @@
 exponential_lr:
-  class: ExponentialLR
+  class: ExponentialLRScheduler
   args:
     gamma: 0.9  # Multiplicative factor of learning rate decay

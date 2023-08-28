@@ -58,9 +58,9 @@ def _get_dataloaders(dataset, batch_size, num_workers, train_val_split):
 
 def main():
     # TODO: Add argparse
-    loader = Loader(BASE_DIR)
+    loader = Loader(os.path.join(BASE_DIR, "configs"))
 
-    config = loader.load_config_file("configs/config.yaml")
+    config = loader.load_config_file("config.yaml")
 
     model = loader.load_model(config["model"])
 
