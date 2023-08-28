@@ -6,13 +6,14 @@ import os
 
 
 class Trainer:
-    def __init__(self, model, loss_fn, device, log_path):
+    def __init__(self, model, loss_fn, device, logger):
         # TODO: Add configs
+        # TODO: Logging missing
         self.model = model
         self.loss_fn = loss_fn
         self.device = device
-        self.log_path = log_path
-        self.checkpoints_path = os.path.join(log_path, "checkpoints")
+        self.logger = logger
+        self.checkpoints_path = os.path.join(self.logger.logs_dir, "checkpoints")
 
         os.makedirs(self.checkpoints_path, exist_ok=True)
 

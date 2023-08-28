@@ -3,6 +3,7 @@ import os
 import src.core as core
 import src.datasets as datasets
 import src.models as models
+from src.utils.logger import Logger
 
 # Config files paths relative to config_dir
 DATASETS_CONFIG_PATH = "datasets.yaml"
@@ -15,8 +16,13 @@ STOP_CONDITIONS_CONFIG_PATH = "stop_conditions.yaml"
 
 
 class Loader:
-    def __init__(self, config_dir: str):
+    def __init__(self, config_dir: str, logger: Logger):
         self.config_dir = config_dir
+        self.logger = logger
+
+    def _log_config(self, config: dict, name: str):
+        title = f"Loading {name} configuration"
+        self.logger.log_yaml(title, config)
 
     def _load_config(self, path: str, name: str, module: list, custom_args: dict = {}):
         configs = self.load_config_file(path)
@@ -26,6 +32,7 @@ class Loader:
 
         for c in module:
             if c.__name__ == config_class:
+                self._log_config(config, name)
                 return c(**custom_args, **config_args)
         return None
 

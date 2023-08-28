@@ -5,13 +5,16 @@ import argparse
 from datetime import datetime
 from torch.utils.data import DataLoader
 
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.append(BASE_DIR)
 
-from src.utils.loader import Loader
-from src.trainers.trainer import Trainer
 
-CONFIGS_DIR = os.path.join(BASE_DIR, "configs")
+from src.trainers.trainer import Trainer
+from src.utils.loader import Loader
+from src.utils.logger import Logger
+
+CONFIGS_DIR = os.path.join(BASE_DIR, "configs")  # TODO: Move to config
 LOGS_DIR = os.path.join(BASE_DIR, "logs")
 
 
@@ -22,6 +25,7 @@ def _load_train_data(loader, training_config, model):
     metrics_names = training_config["metrics"]
     scheduler_name = training_config["scheduler"]
     stop_condition_name = training_config["stop_condition"]
+    hyperparameters = training_config["hyperparameters"]
 
     dataset = loader.load_dataset(dataset_name)
     optimizer = loader.load_optimizer(optimizer_name, model)
@@ -37,10 +41,10 @@ def _load_train_data(loader, training_config, model):
         "metrics": metrics,
         "scheduler": scheduler,
         "stop_condition": stop_condition,
-        "epochs": training_config["epochs"],
-        "num_workers": training_config["num_workers"],
-        "batch_size": training_config["batch_size"],
-        "train_val_split": training_config["train_val_split"],
+        "epochs": hyperparameters["epochs"],
+        "num_workers": hyperparameters["num_workers"],
+        "batch_size": hyperparameters["batch_size"],
+        "train_val_split": hyperparameters["train_val_split"],
     }
 
 
@@ -60,52 +64,68 @@ def _get_dataloaders(dataset, batch_size, num_workers, train_val_split):
     return train_loader, validation_loader
 
 
+def _log_hyperparameters(logger, hyperparameters):
+    logger.log_yaml("Loading hyperparameters", hyperparameters)
+
+
 def main(args):
-    # TODO: Add argparse
-    loader = Loader(CONFIGS_DIR)
+    log_dir = os.path.join(LOGS_DIR, datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
+    logger = Logger(log_dir, verbose=True)
 
-    config = loader.load_config_file(args.config)
+    try:
+        loader = Loader(CONFIGS_DIR, logger)
 
-    model = loader.load_model(config["model"])
+        logger.info("Loading configuration files...")
 
-    training_config = config["train"]
-    data = _load_train_data(loader, training_config, model)
-    (
-        dataset,
-        optimizer,
-        loss,
-        metrics,
-        scheduler,
-        stop_condition,
-        epochs,
-        num_workers,
-        batch_size,
-        train_val_split,
-    ) = data.values()
+        config = loader.load_config_file(args.config)
 
-    train_loader, validation_loader = _get_dataloaders(dataset, batch_size, num_workers, train_val_split)
+        model = loader.load_model(config["model"])
 
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        training_config = config["train"]
+        data = _load_train_data(loader, training_config, model)
+        (
+            dataset,
+            optimizer,
+            loss,
+            metrics,
+            scheduler,
+            stop_condition,
+            epochs,
+            num_workers,
+            batch_size,
+            train_val_split,
+        ) = data.values()
 
-    print(f"Using device: {device}")
+        _log_hyperparameters(logger, training_config["hyperparameters"])
 
-    model.to(device)
+        return
 
-    log_path = os.path.join(LOGS_DIR, datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
+        train_loader, validation_loader = _get_dataloaders(dataset, batch_size, num_workers, train_val_split)
 
-    trainer = Trainer(model, loss, device=device, log_path=log_path)
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    trainer.train(
-        train_loader,
-        validation_loader,
-        epochs,
-        optimizer,
-        scheduler=scheduler,
-        stop_condition=stop_condition,
-        metrics=metrics,
-    )
+        logger.info(f"Using device: {device}")
 
-    print("Finished Training")
+        model.to(device)
+
+        trainer = Trainer(model, loss, device=device, logger=logger)
+
+        trainer.train(
+            train_loader,
+            validation_loader,
+            epochs,
+            optimizer,
+            scheduler=scheduler,
+            stop_condition=stop_condition,
+            metrics=metrics,
+        )
+
+        logger.info("Training finished")
+
+    except Exception:
+        import traceback
+
+        logger.error(traceback.format_exc())
 
 
 if __name__ == "__main__":
