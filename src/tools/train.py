@@ -18,34 +18,58 @@ from src.utils.logger import Logger
 CONFIGS_DIR = os.path.join(BASE_DIR, "configs")  # TODO: Move to config
 LOGS_DIR = os.path.join(BASE_DIR, "logs")
 
+DATASET_CONFIG_NAME = "dataset"
+OPTIMIZER_CONFIG_NAME = "optimizer"
+LOSS_CONFIG_NAME = "loss"
+METRICS_CONFIG_NAME = "metrics"
+SCHEDULER_CONFIG_NAME = "scheduler"
+STOP_CONDITION_CONFIG_NAME = "stop_condition"
+HYPERPARAMETERS_CONFIG_NAME = "hyperparameters"
 
-def _load_train_data(loader, training_config, model):
-    dataset_name = training_config["dataset"]
-    optimizer_name = training_config["optimizer"]
-    loss_name = training_config["loss"]
-    metrics_names = training_config["metrics"]
-    scheduler_name = training_config["scheduler"]
-    stop_condition_name = training_config["stop_condition"]
-    hyperparameters = training_config["hyperparameters"]
+EPOCHS_CONFIG_NAME = "epochs"
+NUM_WORKERS_CONFIG_NAME = "num_workers"
+BATCH_SIZE_CONFIG_NAME = "batch_size"
+TRAIN_VAL_SPLIT_CONFIG_NAME = "train_val_split"
 
-    dataset = loader.load_dataset(dataset_name)
-    optimizer = loader.load_optimizer(optimizer_name, model)
-    loss = loader.load_loss(loss_name)
-    metrics = loader.load_metrics(metrics_names)
-    scheduler = loader.load_scheduler(scheduler_name, optimizer)
-    stop_condition = loader.load_stop_condition(stop_condition_name)
+
+def _load_train_data(loader, training_config, model, logger):
+    dataset_name = training_config[DATASET_CONFIG_NAME]
+    optimizer_name = training_config[OPTIMIZER_CONFIG_NAME]
+    loss_name = training_config[LOSS_CONFIG_NAME]
+    metrics_names = training_config[METRICS_CONFIG_NAME]
+    scheduler_name = training_config[SCHEDULER_CONFIG_NAME]
+    stop_condition_name = training_config[STOP_CONDITION_CONFIG_NAME]
+
+    dataset, dataset_config = loader.load_dataset(dataset_name)
+    logger.log_config(DATASET_CONFIG_NAME, dataset_config)
+
+    optimizer, optimizer_config = loader.load_optimizer(optimizer_name, model)
+    logger.log_config(OPTIMIZER_CONFIG_NAME, optimizer_config)
+
+    loss, loss_config = loader.load_loss(loss_name)
+    logger.log_config(LOSS_CONFIG_NAME, loss_config)
+
+    metrics, metrics_config = loader.load_metrics(metrics_names)
+    for metric_name in metrics_config:  # TODO: FIX METRICS LISTING
+        logger.log_config(metric_name, metrics_config[metric_name])
+
+    scheduler, scheduler_config = loader.load_scheduler(scheduler_name, optimizer)
+    logger.log_config(SCHEDULER_CONFIG_NAME, scheduler_config)
+
+    stop_condition, stop_condition_config = loader.load_stop_condition(stop_condition_name)
+    logger.log_config(STOP_CONDITION_CONFIG_NAME, stop_condition_config)
+
+    hyperparameters = training_config[HYPERPARAMETERS_CONFIG_NAME]
+    logger.log_config(HYPERPARAMETERS_CONFIG_NAME, hyperparameters)
 
     return {
-        "dataset": dataset,
-        "optimizer": optimizer,
-        "loss": loss,
-        "metrics": metrics,
-        "scheduler": scheduler,
-        "stop_condition": stop_condition,
-        "epochs": hyperparameters["epochs"],
-        "num_workers": hyperparameters["num_workers"],
-        "batch_size": hyperparameters["batch_size"],
-        "train_val_split": hyperparameters["train_val_split"],
+        DATASET_CONFIG_NAME: dataset,
+        OPTIMIZER_CONFIG_NAME: optimizer,
+        LOSS_CONFIG_NAME: loss,
+        METRICS_CONFIG_NAME: metrics,
+        SCHEDULER_CONFIG_NAME: scheduler,
+        STOP_CONDITION_CONFIG_NAME: stop_condition,
+        HYPERPARAMETERS_CONFIG_NAME: hyperparameters,
     }
 
 
@@ -65,8 +89,15 @@ def _get_dataloaders(dataset, batch_size, num_workers, train_val_split):
     return train_loader, validation_loader
 
 
-def _log_hyperparameters(logger, hyperparameters):
-    logger.log_yaml("Loading hyperparameters", hyperparameters)
+def _get_device(logger):
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    logger.log_device(device)
+    device = torch.device(device)
+    return device
+
+
+def _log_training_time(start_time, end_time, logger):
+    logger.log_time("Training", end_time - start_time)
 
 
 def main(args):
@@ -74,16 +105,17 @@ def main(args):
     logger = Logger(log_dir, verbose=True)
 
     try:
-        loader = Loader(CONFIGS_DIR, logger)
+        loader = Loader(CONFIGS_DIR)
 
         logger.info("Loading configuration files...")
 
         config = loader.load_config_file(args.config)
 
-        model = loader.load_model(config["model"])
+        model, model_config = loader.load_model(config["model"])
+        # TODO: log summary
 
         training_config = config["train"]
-        data = _load_train_data(loader, training_config, model)
+        data = _load_train_data(loader, training_config, model, logger)
         (
             dataset,
             optimizer,
@@ -91,26 +123,21 @@ def main(args):
             metrics,
             scheduler,
             stop_condition,
-            epochs,
-            num_workers,
-            batch_size,
-            train_val_split,
+            hyperparameters,
         ) = data.values()
 
-        _log_hyperparameters(logger, training_config["hyperparameters"])
+        epochs, num_workers, batch_size, train_val_split = hyperparameters.values()
 
         train_loader, validation_loader = _get_dataloaders(dataset, batch_size, num_workers, train_val_split)
 
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-        logger.info(f"Using device: {device}")
+        device = _get_device(logger)
 
         model.to(device)
 
         trainer = Trainer(model, loss, device=device, logger=logger)
 
         start_time = time.time()
-        
+
         trainer.train(
             train_loader,
             validation_loader,
@@ -123,9 +150,9 @@ def main(args):
 
         end_time = time.time()
 
-        logger.info(f"Training took {end_time - start_time} seconds")
+        _log_training_time(start_time, end_time, logger)
 
-        logger.info("Training finished")
+        logger.save_log()
 
     except Exception:
         import traceback

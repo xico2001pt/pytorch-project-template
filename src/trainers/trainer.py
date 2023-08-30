@@ -17,7 +17,7 @@ class Trainer:
 
         os.makedirs(self.checkpoints_path, exist_ok=True)
 
-    def _log_epoch_stats(self, loss: list[float] | dict[list[float]], metrics: dict, split_name: str):
+    def _log_epoch_stats(self, loss: list, metrics: dict, split_name: str):
         yaml_dict = {"Loss": loss, "Metrics": metrics}
         self.logger.log_yaml(f"{split_name} Stats", yaml_dict)
 
