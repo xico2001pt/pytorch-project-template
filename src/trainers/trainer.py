@@ -13,17 +13,15 @@ class Trainer:
         self.loss_fn = loss_fn
         self.device = device
         self.logger = logger
-        self.checkpoints_path = os.path.join(self.logger.logs_dir, "checkpoints")
+        self.checkpoints_path = os.path.join(self.logger.get_log_dir(), "checkpoints")
 
         os.makedirs(self.checkpoints_path, exist_ok=True)
 
-    @staticmethod
-    def _print_epoch_stats(loss, metrics: dict, split_name: str):
-        print(f"{split_name} Loss: {loss:.4f}")
-        for metric in metrics:
-            print(f"{split_name} {metric}: {metrics[metric]:.4f}")
+    def _log_epoch_stats(self, loss: list[float] | dict[list[float]], metrics: dict, split_name: str):
+        yaml_dict = {"Loss": loss, "Metrics": metrics}
+        self.logger.log_yaml(f"{split_name} Stats", yaml_dict)
 
-    def _save_checkpoint(self, filename, optimizer, epoch):
+    def _save_checkpoint(self, filename: str, optimizer, epoch: int):
         save_dict = {
             "model": self.model.state_dict(),
             "optimizer": optimizer.state_dict(),
@@ -32,16 +30,14 @@ class Trainer:
         torch.save(save_dict, os.path.join(self.checkpoints_path, filename))
 
     def _save_log(self, obj, filename):
-        json.dump(obj, open(os.path.join(self.log_path, filename), "w"))
+        json.dump(obj, open(os.path.join(self.logger.get_log_dir(), filename), "w"))
 
     def _compute_loss(self, inputs, targets):
         outputs = self.model(inputs)
         loss = self.loss_fn(outputs, targets)
         return outputs, loss
 
-    def _epoch_iteration(
-        self, dataloader, is_train=True, optimizer=None, metrics={}, description="Train"
-    ):
+    def _epoch_iteration(self, dataloader, is_train=True, optimizer=None, metrics={}, description="Train"):
         if is_train:
             assert optimizer is not None, "optimizer must be provided for training"
 
@@ -104,8 +100,7 @@ class Trainer:
                 description="Train",
             )
 
-            # TODO: If verbose
-            Trainer._print_epoch_stats(train_loss, train_metrics, "Train")
+            self._log_epoch_stats(train_loss, train_metrics, "Train")
 
             validation_loss, validation_metrics = self._epoch_iteration(
                 validation_dataloader,
@@ -114,7 +109,7 @@ class Trainer:
                 description="Validation",
             )
 
-            Trainer._print_epoch_stats(validation_loss, validation_metrics, "Validation")
+            self._log_epoch_stats(validation_loss, validation_metrics, "Validation")
 
             if validation_loss < best_validation_loss:
                 best_validation_loss = validation_loss
@@ -147,7 +142,7 @@ class Trainer:
             test_dataloader, is_train=False, metrics=metrics, description="Test"
         )
 
-        Trainer._print_epoch_stats(test_loss, test_metrics, "Test")
+        self._log_epoch_stats(test_loss, test_metrics, "Test")
 
         self._save_log(test_loss, "test_loss.json")
         self._save_log(test_metrics, "test_metrics.json")

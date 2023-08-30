@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 import torch
 import argparse
 from datetime import datetime
@@ -98,8 +99,6 @@ def main(args):
 
         _log_hyperparameters(logger, training_config["hyperparameters"])
 
-        return
-
         train_loader, validation_loader = _get_dataloaders(dataset, batch_size, num_workers, train_val_split)
 
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -110,6 +109,8 @@ def main(args):
 
         trainer = Trainer(model, loss, device=device, logger=logger)
 
+        start_time = time.time()
+        
         trainer.train(
             train_loader,
             validation_loader,
@@ -119,6 +120,10 @@ def main(args):
             stop_condition=stop_condition,
             metrics=metrics,
         )
+
+        end_time = time.time()
+
+        logger.info(f"Training took {end_time - start_time} seconds")
 
         logger.info("Training finished")
 

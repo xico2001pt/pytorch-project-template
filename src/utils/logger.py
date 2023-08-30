@@ -30,6 +30,9 @@ class Logger:
     def _create_log_dir(self):
         os.makedirs(self.log_dir, exist_ok=True)
 
+    def get_log_dir(self):
+        return self.log_dir
+
     def info(self, message: str):
         self.logger.info(message)
 
