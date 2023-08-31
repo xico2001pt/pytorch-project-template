@@ -29,8 +29,8 @@ class Trainer:
         }
         torch.save(save_dict, os.path.join(self.checkpoints_path, filename))
 
-    def _save_log(self, obj, filename):
-        json.dump(obj, open(os.path.join(self.logger.get_log_dir(), filename), "w"))
+    def _save_stats(self, loss_history, metrics_history, name):
+        self.logger.add_log_entry(f"{name}_history", {"loss": loss_history, "metrics": metrics_history})
 
     def _compute_loss(self, inputs, targets):
         outputs = self.model(inputs)
@@ -124,11 +124,8 @@ class Trainer:
                 train_history["metrics"][metric].append(train_metrics[metric])
                 validation_history["metrics"][metric].append(validation_metrics[metric])
 
-            self._save_log(train_history["loss"], "train_losses.json")
-            self._save_log(train_history["metrics"], "train_metrics.json")
-            self._save_log(validation_history["loss"], "validation_losses.json")
-            self._save_log(validation_history["metrics"], "validation_metrics.json")
-            # TODO: Save configs
+            self._save_stats(train_history["loss"], train_history["metrics"], "train")
+            self._save_stats(validation_history["loss"], validation_history["metrics"], "validation")
 
             if stop_condition and stop_condition(train_loss, validation_loss):
                 self.logger.warning("Stopping due to stop condition")
@@ -144,6 +141,4 @@ class Trainer:
 
         self._log_epoch_stats(test_loss, test_metrics, "Test")
 
-        self._save_log(test_loss, "test_loss.json")
-        self._save_log(test_metrics, "test_metrics.json")
-        # TODO: Save configs
+        self._save_stats(test_loss, test_metrics, "test")
