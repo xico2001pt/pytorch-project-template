@@ -83,14 +83,14 @@ class Trainer:
         stop_condition=None,
         metrics={},
     ):
-        print(f"Training for {num_epochs} epochs")
+        self.logger.info(f"Training for {num_epochs} epochs")
 
         train_history = {"loss": [], "metrics": {metric: [] for metric in metrics}}
         validation_history = {"loss": [], "metrics": {metric: [] for metric in metrics}}
         best_validation_loss = np.inf
 
         for epoch in range(1, num_epochs + 1):
-            print(f"Epoch {epoch}/{num_epochs}")
+            self.logger.info(f"Epoch {epoch}/{num_epochs}")
 
             train_loss, train_metrics = self._epoch_iteration(
                 train_dataloader,
@@ -131,7 +131,7 @@ class Trainer:
             # TODO: Save configs
 
             if stop_condition and stop_condition(train_loss, validation_loss):
-                print("Stopping due to stop condition")
+                self.logger.warning("Stopping due to stop condition")
                 break
 
             if scheduler:
