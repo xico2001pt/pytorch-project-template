@@ -102,7 +102,7 @@ def _log_training_time(start_time, end_time, logger):
 
 def main(args):
     log_dir = os.path.join(LOGS_DIR, datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
-    logger = Logger(log_dir, verbose=True)
+    logger = Logger(log_dir, console_output=True, file_output=True)
 
     try:
         loader = Loader(CONFIGS_DIR)

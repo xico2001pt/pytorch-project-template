@@ -8,17 +8,18 @@ OUTPUT_FILE_NAME = "output.log"
 LOG_FILE_NAME = "log.yaml"
 
 
-def create_logger(log_dir: str, verbose: bool = True):
+def create_logger(log_dir: str, console_output: bool = True, file_output: bool = True) -> logging.Logger:
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)
 
     formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 
-    file_handler = logging.FileHandler(os.path.join(log_dir, OUTPUT_FILE_NAME))
-    file_handler.setFormatter(formatter)
-    logger.addHandler(file_handler)
+    if file_output:
+        file_handler = logging.FileHandler(os.path.join(log_dir, OUTPUT_FILE_NAME))
+        file_handler.setFormatter(formatter)
+        logger.addHandler(file_handler)
 
-    if verbose:
+    if console_output:
         stream_handler = logging.StreamHandler(sys.stdout)
         stream_handler.setFormatter(formatter)
         logger.addHandler(stream_handler)
@@ -27,11 +28,10 @@ def create_logger(log_dir: str, verbose: bool = True):
 
 
 class Logger:
-    def __init__(self, log_dir: str, verbose: bool = True):
+    def __init__(self, log_dir: str, console_output: bool = True, file_output: bool = True):
         self.log_dir = log_dir
-        self.verbose = verbose
         self._create_log_dir()
-        self.logger = create_logger(log_dir, verbose)
+        self.logger = create_logger(log_dir, console_output, file_output)
         self.log = dict()
 
     def _create_log_dir(self):
