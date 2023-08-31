@@ -8,6 +8,8 @@ PyTorch template for deep learning projects.
 - [Usage](#usage)
 - [Project Structure](#project-structure)
 - [Configurations](#configurations)
+- [Logging](#logging)
+- [Documentation](#documentation)
 - [Future Work](#future-work)
 - [License](#license)
 - [Acknowledgments](#acknowledgments)
@@ -27,6 +29,20 @@ pip install -r requirements.txt
 ```
 
 ## Usage
+
+To train a model, run the following command:
+
+```bash
+python src/tools/train.py --config configs/config.yaml
+```
+
+To test a model, run the following command:
+
+```bash
+python src/tools/test.py --model weights/model_name.pth
+```
+
+More details about the usage of the scripts can be found on the [documentation](docs/README.md).
 
 ## Project Structure
 
@@ -51,15 +67,12 @@ pytorch-project-template/
 │   │   ├── checkpoints/  # model checkpoints
 │   │   │   ├── best_checkpoint.pth  # best model checkpoint
 │   │   │   └── latest_checkpoint.pth  # latest model checkpoint
-│   │   ├── train_losses.json  # train losses
-│   │   ├── train_metrics.json  # train metrics
-│   │   ├── validation_losses.json  # validation losses
-│   │   ├── validation_metrics.json  # validation metrics
-│   │   ├── test_loss.json  # test loss
-│   │   └── test_metrics.json  # test metrics
+│   │   ├── log.yaml  # log containing all the information about the run
+│   │   └── output.log  # log containing the redirected output of the console
 │   └── ...
 │── src/  # source code
 │   ├── core/  # contains the core functionalities
+│   │   ├── __init__.py  # exports the core functionalities
 │   │   ├── losses.py  # loss functions
 │   │   ├── metrics.py  # evaluation metrics
 │   │   ├── optimizers.py  # optimizers
@@ -67,9 +80,11 @@ pytorch-project-template/
 │   │   ├── stop_conditions.py  # stop conditions
 │   │   └── ...
 │   ├── datasets/  # contains the dataset definitions
+│   │   ├── __init__.py  # exports the dataset definitions
 │   │   ├── dataset1.py
 │   │   └── ...
 │   ├── models/  # contains the model definitions
+│   │   ├── __init__.py  # exports the model definitions
 │   │   ├── model1.py
 │   │   └── ...
 │   ├── tools/  # scripts for training, testing, etc.
@@ -82,7 +97,8 @@ pytorch-project-template/
 │   │   ├── trainer.py
 │   │   └── ...
 │   ├── utils/  # utility functions
-│   │   ├── loader.py  # utility functions for loading data using the configurations
+│   │   ├── loader.py  # utility class for loading data using the configurations
+│   │   ├── logger.py  # utility class for logging
 │   │   ├── utils.py
 │   │   └── ...
 │   └── ...
@@ -92,8 +108,45 @@ pytorch-project-template/
 
 ## Configurations
 
+The configurations are stored in the `configs` directory. The configurations are divided into several files, each one containing the configurations for a specific section of the project. The following files are available:
+
+- `config.yaml`: contains the general configurations for the project
+- `datasets.yaml`: contains the configurations for the datasets
+- `losses.yaml`: contains the configurations for the loss functions
+- `metrics.yaml`: contains the configurations for the evaluation metrics
+- `models.yaml`: contains the configurations for the models
+- `optimizers.yaml`: contains the configurations for the optimizers
+- `schedulers.yaml`: contains the configurations for the learning rate schedulers
+- `stop_conditions.yaml`: contains the configurations for the stop conditions
+
+More details about the configurations can be found on the [documentation](docs/README.md).
+
+## Logging
+
+The `Logger` class is used to log all the information about the run. Each run is stored in a directory inside the `logs` directory, where the name of the directory is the date and time of the run. Inside the directory, there are two files:
+
+- `log.yaml`: contains all the information about the run
+- `output.log`: contains the redirected output of the console
+
+More details about the logging can be found on the [documentation](docs/README.md).
+
+## Documentation
+
+Read the [documentation](docs/README.md) for more details about the project and all the sections mentioned above.
+
 ## Future Work
+
+Some of the features that I would like to add to this project template are:
+
+- [ ] Display model summary
 
 ## License
 
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
 ## Acknowledgments
+
+This repository was developed by [Francisco Cerqueira](https://github.com/xico2001pt) and was inspired by the following projects:
+
+- [pytorch-template](https://github.com/victoresque/pytorch-template)
+- [YOLOP](https://github.com/hustvl/YOLOP)
