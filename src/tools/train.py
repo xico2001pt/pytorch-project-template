@@ -50,8 +50,8 @@ def _load_train_data(loader, training_config, model, logger):
     logger.log_config(LOSS_CONFIG_NAME, loss_config)
 
     metrics, metrics_config = loader.load_metrics(metrics_names)
-    for metric_name in metrics_config:  # TODO: FIX METRICS LISTING
-        logger.log_config(metric_name, metrics_config[metric_name])
+    metrics_dict = {metric_name: metrics_config[metric_name] for metric_name in metrics_names}
+    logger.log_config(METRICS_CONFIG_NAME, metrics_dict)
 
     scheduler, scheduler_config = loader.load_scheduler(scheduler_name, optimizer)
     logger.log_config(SCHEDULER_CONFIG_NAME, scheduler_config)
