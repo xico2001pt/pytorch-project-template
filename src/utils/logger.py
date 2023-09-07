@@ -2,10 +2,7 @@ import logging
 import os
 import sys
 import yaml
-
-
-OUTPUT_FILE_NAME = "output.log"
-LOG_FILE_NAME = "log.yaml"
+from .constants import Constants as c
 
 
 def create_logger(log_dir: str, console_output: bool = True, file_output: bool = True) -> logging.Logger:
@@ -15,7 +12,7 @@ def create_logger(log_dir: str, console_output: bool = True, file_output: bool =
     formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
 
     if file_output:
-        file_handler = logging.FileHandler(os.path.join(log_dir, OUTPUT_FILE_NAME))
+        file_handler = logging.FileHandler(os.path.join(log_dir, c.Logging.OUTPUT_FILENAME))
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
 
@@ -38,7 +35,7 @@ class Logger:
         os.makedirs(self.log_dir, exist_ok=True)
 
     def save_log(self):
-        yaml.dump(self.log, open(os.path.join(self.log_dir, LOG_FILE_NAME), "w"))
+        yaml.dump(self.log, open(os.path.join(self.log_dir, c.Logging.LOG_FILENAME), "w"))
 
     def get_log_dir(self):
         return self.log_dir

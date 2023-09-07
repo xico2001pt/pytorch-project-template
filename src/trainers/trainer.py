@@ -2,17 +2,17 @@ import torch
 from tqdm import tqdm
 import numpy as np
 import os
+from ..utils.constants import Constants as c
 
 
 class Trainer:
     def __init__(self, model, loss_fn, device, logger):
         # TODO: Add configs
-        # TODO: Logging missing
         self.model = model
         self.loss_fn = loss_fn
         self.device = device
         self.logger = logger
-        self.checkpoints_path = os.path.join(self.logger.get_log_dir(), "checkpoints")
+        self.checkpoints_path = os.path.join(self.logger.get_log_dir(), c.Trainer.Checkpoints.CHECKPOINTS_DIR)
 
         os.makedirs(self.checkpoints_path, exist_ok=True)
 
@@ -112,9 +112,9 @@ class Trainer:
 
             if validation_loss < best_validation_loss:
                 best_validation_loss = validation_loss
-                self._save_checkpoint("best_checkpoint.pth", optimizer, epoch)
+                self._save_checkpoint(c.Trainer.Checkpoints.BEST_CHECKPOINT_FILENAME, optimizer, epoch)
 
-            self._save_checkpoint("latest_checkpoint.pth", optimizer, epoch)
+            self._save_checkpoint(c.Trainer.Checkpoints.LATEST_CHECKPOINT_FILENAME, optimizer, epoch)
 
             train_history["loss"].append(train_loss)
             validation_history["loss"].append(validation_loss)

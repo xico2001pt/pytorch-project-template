@@ -3,15 +3,7 @@ import os
 import src.core as core
 import src.datasets as datasets
 import src.models as models
-
-# Config files paths relative to config_dir
-DATASETS_CONFIG_PATH = "datasets.yaml"
-MODELS_CONFIG_PATH = "models.yaml"
-LOSSES_CONFIG_PATH = "losses.yaml"
-METRICS_CONFIG_PATH = "metrics.yaml"
-OPTIMIZERS_CONFIG_PATH = "optimizers.yaml"
-SCHEDULERS_CONFIG_PATH = "schedulers.yaml"
-STOP_CONDITIONS_CONFIG_PATH = "stop_conditions.yaml"
+from .constants import Constants as c
 
 
 class Loader:
@@ -25,9 +17,9 @@ class Loader:
         config_args = config["args"]
 
         res = None
-        for c in module:
-            if c.__name__ == config_class:
-                res = c(**config_args, **custom_args)
+        for cl in module:
+            if cl.__name__ == config_class:
+                res = cl(**config_args, **custom_args)
                 break
         return res, config
 
@@ -38,34 +30,36 @@ class Loader:
         return config
 
     def load_dataset(self, name: str):
-        return self._load_config(DATASETS_CONFIG_PATH, name, datasets.classes)
+        return self._load_config(c.Loader.DATASETS_CONFIG_FILENAME, name, datasets.classes)
 
     def load_model(self, name: str):
-        return self._load_config(MODELS_CONFIG_PATH, name, models.classes)
+        return self._load_config(c.Loader.MODELS_CONFIG_FILENAME, name, models.classes)
 
     def load_loss(self, name: str):
-        return self._load_config(LOSSES_CONFIG_PATH, name, core.classes["losses"])
+        return self._load_config(c.Loader.LOSSES_CONFIG_FILENAME, name, core.classes["losses"])
 
     def load_metrics(self, names: list):
         metrics_dict = {}
         metrics_configs_dict = {}
         for name in names:
             metrics_dict[name], metrics_configs_dict[name] = self._load_config(
-                METRICS_CONFIG_PATH, name, core.classes["metrics"]
+                c.Loader.METRICS_CONFIG_FILENAME, name, core.classes["metrics"]
             )
         return metrics_dict, metrics_configs_dict
 
     def load_optimizer(self, name: str, model):
         return self._load_config(
-            OPTIMIZERS_CONFIG_PATH, name, core.classes["optimizers"], {"params": model.parameters()}
+            c.Loader.OPTIMIZERS_CONFIG_FILENAME, name, core.classes["optimizers"], {"params": model.parameters()}
         )
 
     def load_scheduler(self, name: str, optimizer):
         if name == "None":
             return None, None
-        return self._load_config(SCHEDULERS_CONFIG_PATH, name, core.classes["schedulers"], {"optimizer": optimizer})
+        return self._load_config(
+            c.Loader.SCHEDULERS_CONFIG_FILENAME, name, core.classes["schedulers"], {"optimizer": optimizer}
+        )
 
     def load_stop_condition(self, name: str):
         if name == "None":
             return None, None
-        return self._load_config(STOP_CONDITIONS_CONFIG_PATH, name, core.classes["stop_conditions"])
+        return self._load_config(c.Loader.STOP_CONDITIONS_CONFIG_FILENAME, name, core.classes["stop_conditions"])

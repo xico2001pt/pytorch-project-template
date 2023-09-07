@@ -109,6 +109,7 @@ pytorch-project-template/
 │   │   ├── trainer.py
 │   │   └── ...
 │   ├── utils/  # utility functions
+│   │   ├── constants.py  # contains the constants used in the project
 │   │   ├── loader.py  # utility class for loading data using the configurations
 │   │   ├── logger.py  # utility class for logging
 │   │   ├── utils.py

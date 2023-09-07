@@ -14,62 +14,51 @@ sys.path.append(BASE_DIR)
 from src.trainers.trainer import Trainer
 from src.utils.loader import Loader
 from src.utils.logger import Logger
+from src.utils.constants import Constants as c
 
-CONFIGS_DIR = os.path.join(BASE_DIR, "configs")  # TODO: Move to config
-LOGS_DIR = os.path.join(BASE_DIR, "logs")
 
-DATASET_CONFIG_NAME = "dataset"
-OPTIMIZER_CONFIG_NAME = "optimizer"
-LOSS_CONFIG_NAME = "loss"
-METRICS_CONFIG_NAME = "metrics"
-SCHEDULER_CONFIG_NAME = "scheduler"
-STOP_CONDITION_CONFIG_NAME = "stop_condition"
-HYPERPARAMETERS_CONFIG_NAME = "hyperparameters"
-
-EPOCHS_CONFIG_NAME = "epochs"
-NUM_WORKERS_CONFIG_NAME = "num_workers"
-BATCH_SIZE_CONFIG_NAME = "batch_size"
-TRAIN_VAL_SPLIT_CONFIG_NAME = "train_val_split"
+CONFIGS_DIR = os.path.join(BASE_DIR, c.Configurations.CONFIGS_DIR)
+LOGS_DIR = os.path.join(BASE_DIR, c.Logging.LOGS_DIR)
 
 
 def _load_train_data(loader, training_config, model, logger):
-    dataset_name = training_config[DATASET_CONFIG_NAME]
-    optimizer_name = training_config[OPTIMIZER_CONFIG_NAME]
-    loss_name = training_config[LOSS_CONFIG_NAME]
-    metrics_names = training_config[METRICS_CONFIG_NAME]
-    scheduler_name = training_config[SCHEDULER_CONFIG_NAME]
-    stop_condition_name = training_config[STOP_CONDITION_CONFIG_NAME]
+    dataset_name = training_config[c.Configurations.Parameters.DATASET_CONFIG_NAME]
+    optimizer_name = training_config[c.Configurations.Parameters.OPTIMIZER_CONFIG_NAME]
+    loss_name = training_config[c.Configurations.Parameters.LOSS_CONFIG_NAME]
+    metrics_names = training_config[c.Configurations.Parameters.METRICS_CONFIG_NAME]
+    scheduler_name = training_config[c.Configurations.Parameters.SCHEDULER_CONFIG_NAME]
+    stop_condition_name = training_config[c.Configurations.Parameters.STOP_CONDITION_CONFIG_NAME]
 
     dataset, dataset_config = loader.load_dataset(dataset_name)
-    logger.log_config(DATASET_CONFIG_NAME, dataset_config)
+    logger.log_config(c.Configurations.Parameters.DATASET_CONFIG_NAME, dataset_config)
 
     optimizer, optimizer_config = loader.load_optimizer(optimizer_name, model)
-    logger.log_config(OPTIMIZER_CONFIG_NAME, optimizer_config)
+    logger.log_config(c.Configurations.Parameters.OPTIMIZER_CONFIG_NAME, optimizer_config)
 
     loss, loss_config = loader.load_loss(loss_name)
-    logger.log_config(LOSS_CONFIG_NAME, loss_config)
+    logger.log_config(c.Configurations.Parameters.LOSS_CONFIG_NAME, loss_config)
 
     metrics, metrics_config = loader.load_metrics(metrics_names)
     metrics_dict = {metric_name: metrics_config[metric_name] for metric_name in metrics_names}
-    logger.log_config(METRICS_CONFIG_NAME, metrics_dict)
+    logger.log_config(c.Configurations.Parameters.METRICS_CONFIG_NAME, metrics_dict)
 
     scheduler, scheduler_config = loader.load_scheduler(scheduler_name, optimizer)
-    logger.log_config(SCHEDULER_CONFIG_NAME, scheduler_config)
+    logger.log_config(c.Configurations.Parameters.SCHEDULER_CONFIG_NAME, scheduler_config)
 
     stop_condition, stop_condition_config = loader.load_stop_condition(stop_condition_name)
-    logger.log_config(STOP_CONDITION_CONFIG_NAME, stop_condition_config)
+    logger.log_config(c.Configurations.Parameters.STOP_CONDITION_CONFIG_NAME, stop_condition_config)
 
-    hyperparameters = training_config[HYPERPARAMETERS_CONFIG_NAME]
-    logger.log_config(HYPERPARAMETERS_CONFIG_NAME, hyperparameters)
+    hyperparameters = training_config[c.Configurations.Parameters.HYPERPARAMETERS_CONFIG_NAME]
+    logger.log_config(c.Configurations.Parameters.HYPERPARAMETERS_CONFIG_NAME, hyperparameters)
 
     return {
-        DATASET_CONFIG_NAME: dataset,
-        OPTIMIZER_CONFIG_NAME: optimizer,
-        LOSS_CONFIG_NAME: loss,
-        METRICS_CONFIG_NAME: metrics,
-        SCHEDULER_CONFIG_NAME: scheduler,
-        STOP_CONDITION_CONFIG_NAME: stop_condition,
-        HYPERPARAMETERS_CONFIG_NAME: hyperparameters,
+        c.Configurations.Parameters.DATASET_CONFIG_NAME: dataset,
+        c.Configurations.Parameters.OPTIMIZER_CONFIG_NAME: optimizer,
+        c.Configurations.Parameters.LOSS_CONFIG_NAME: loss,
+        c.Configurations.Parameters.METRICS_CONFIG_NAME: metrics,
+        c.Configurations.Parameters.SCHEDULER_CONFIG_NAME: scheduler,
+        c.Configurations.Parameters.STOP_CONDITION_CONFIG_NAME: stop_condition,
+        c.Configurations.Parameters.HYPERPARAMETERS_CONFIG_NAME: hyperparameters,
     }
 
 
@@ -111,7 +100,7 @@ def main(args):
 
         config = loader.load_config_file(args.config)
 
-        model, model_config = loader.load_model(config["model"])
+        model, model_config = loader.load_model(config[c.Configurations.Parameters.MODEL_CONFIG_NAME])
         # TODO: log summary
 
         training_config = config["train"]
@@ -162,7 +151,12 @@ def main(args):
 
 if __name__ == "__main__":
     args = argparse.ArgumentParser()
-    args.add_argument("--config", type=str, default="config.yaml", help="Path to config file")
+    args.add_argument(
+        c.Arguments.CONFIG_FILE_ARGUMENT_NAME,
+        type=str,
+        default=c.Arguments.CONFIG_FILE_DEFAULT_VALUE,
+        help=c.Arguments.CONFIG_FILE_HELP,
+    )
     args = args.parse_args()
 
     main(args)
