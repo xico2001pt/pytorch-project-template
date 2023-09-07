@@ -15,6 +15,7 @@ If you use this template, please make sure to reference the author by including 
 - [Documentation](#documentation)
 - [Future Work](#future-work)
 - [Projects Using This Template](#projects-using-this-template)
+- [Contributing](#contributing)
 - [License](#license)
 - [Acknowledgments](#acknowledgments)
 
@@ -160,7 +161,11 @@ Some of the features that I would like to add to this project template are:
 
 - Comparative Study on Self-Supervision Methods for Autonomous Driving (TBD...) (2024) by [Francisco Cerqueira](https://github.com/xico2001pt)
 
-If you want to see your project here, please contact the author.
+If you want to see your project here, please contact the author or create a pull request.
+
+## Contributing
+
+If you want to contribute to this project, please contact the author or create a pull request with a description of the feature or bug fix.
 
 ## License
 
