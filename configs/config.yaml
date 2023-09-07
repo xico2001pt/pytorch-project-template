@@ -1,11 +1,8 @@
+name: cifar10  # Name of experiment (used for log folder and model naming). If null, the name is the current date and time
+
 model: model1  # Name of model
 
-logger:
-  log_path: logs/  # Path to save logs
-  verbose: true  # Print logs on console
-
 trainer:
-  weights_path: weights/  # Path to save weights
   save_freq: 10  # Save model every save_freq epochs. If 0, only the best model is saved
 
 train:
@@ -13,8 +10,8 @@ train:
   optimizer: sgd  # Optimizer
   loss: cross_entropy  # Loss function
   metrics: [accuracy]  # Metrics to evaluate
-  scheduler: None  # Learning rate scheduler
-  stop_condition: None  # Condition to stop training  
+  scheduler: null  # Learning rate scheduler. Can be null
+  stop_condition: null  # Condition to stop training. Can be null
   hyperparameters:  # Hyperparameters for training
     epochs: 20  # Number of training epochs
     num_workers: 4  # Number of workers for data loading
@@ -23,7 +20,7 @@ train:
 
 test:
   dataset: cifar10_test  # Dataset to use for testing
-  checkpoint_path: logs/checkpoints/best_checkpoints.pth  # Path to checkpoint to load
+  model_path: model1.pth  # Path to model weights (relative to weights folder). If null, config name is used
   loss: cross_entropy  # Loss function
   metrics: [accuracy]  # Metrics to evaluate
   hyperparameters:  # Hyperparameters for testing

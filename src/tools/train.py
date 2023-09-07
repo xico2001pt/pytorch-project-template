@@ -89,13 +89,25 @@ def _log_training_time(start_time, end_time, logger):
     logger.log_time("Training", end_time - start_time)
 
 
+def _get_config_name(loader, config_path):
+    try:
+        config = loader.load_config_file(config_path)
+        name = config["name"]
+
+    except Exception:
+        name = None
+
+    return datetime.now().strftime("%Y-%m-%d-%H-%M-%S") if name is None else name
+
+
 def main(args):
-    log_dir = os.path.join(LOGS_DIR, datetime.now().strftime("%Y-%m-%d-%H-%M-%S"))
+    loader = Loader(CONFIGS_DIR)
+    config_name = _get_config_name(loader, args.config)
+
+    log_dir = os.path.join(LOGS_DIR, config_name)
     logger = Logger(log_dir, console_output=True, file_output=True)
 
     try:
-        loader = Loader(CONFIGS_DIR)
-
         logger.info("Loading configuration files...")
 
         config = loader.load_config_file(args.config)

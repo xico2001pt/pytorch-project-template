@@ -53,13 +53,13 @@ class Loader:
         )
 
     def load_scheduler(self, name: str, optimizer):
-        if name == "None":
+        if name == None:
             return None, None
         return self._load_config(
             c.Loader.SCHEDULERS_CONFIG_FILENAME, name, core.classes["schedulers"], {"optimizer": optimizer}
         )
 
     def load_stop_condition(self, name: str):
-        if name == "None":
+        if name == None:
             return None, None
         return self._load_config(c.Loader.STOP_CONDITIONS_CONFIG_FILENAME, name, core.classes["stop_conditions"])
