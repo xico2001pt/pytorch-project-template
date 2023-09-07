@@ -37,6 +37,8 @@ class Constants:
         LOG_FILENAME = "log.yaml"  # Name of the file that contains the configurations of the run
 
     class Trainer:  # Trainer constants
+        WEIGHTS_DIR = "weights"  # Root directory where model weights are stored
+
         class Checkpoints:  # Checkpoints constants
             CHECKPOINTS_DIR = "checkpoints"  # Directory (inside the run log directory) where checkpoints are stored
             BEST_CHECKPOINT_FILENAME = "best_checkpoint.pth"  # Name of the best checkpoint file

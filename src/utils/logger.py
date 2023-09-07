@@ -40,6 +40,9 @@ class Logger:
     def get_log_dir(self):
         return self.log_dir
 
+    def get_log_dir_name(self):
+        return os.path.basename(self.log_dir)
+
     def info(self, message: str):
         self.logger.info(message)
 

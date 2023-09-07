@@ -72,6 +72,14 @@ class Trainer:
 
         return avg_loss, total_metrics
 
+    def save_best_model(self, save_dir, filename):
+        checkpoint_file = os.path.join(self.checkpoints_path, c.Trainer.Checkpoints.BEST_CHECKPOINT_FILENAME)
+        weights = torch.load(checkpoint_file)["model"]
+        save_path = os.path.join(save_dir, f"{filename}.pth")
+        torch.save(weights, save_path)
+
+        self.logger.info(f"Best model saved to {save_path}")
+
     def train(
         self,
         train_dataloader,
@@ -132,6 +140,8 @@ class Trainer:
 
             if scheduler:
                 scheduler.step()
+
+        self.logger.info(f"Best validation loss: {best_validation_loss}")
 
     def test(self, test_dataloader, metrics={}):
         test_loss, test_metrics = self._epoch_iteration(

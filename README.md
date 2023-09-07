@@ -152,6 +152,7 @@ Read the [documentation](docs/README.md) for more details about the project and 
 Some of the features that I would like to add to this project template are:
 
 - [ ] Display model summary
+- [ ] Add confusion matrix metric and visualization
 - [ ] Add support for distributed training
 - [ ] Add support for multi-GPU training
 

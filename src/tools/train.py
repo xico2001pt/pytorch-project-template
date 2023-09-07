@@ -139,6 +139,8 @@ def main(args):
 
         end_time = time.time()
 
+        trainer.save_best_model(os.path.join(BASE_DIR, c.Trainer.WEIGHTS_DIR), logger.get_log_dir_name())
+
         _log_training_time(start_time, end_time, logger)
 
         logger.save_log()
