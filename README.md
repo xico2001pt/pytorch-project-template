@@ -1,20 +1,28 @@
 # PyTorch Project Template
 
-PyTorch template for deep learning projects.
+Modular and well-structured template for PyTorch deep learning projects.
+
+If you use this template, please make sure to reference the author by including a link to this repository and the author's GitHub profile.
 
 ## Table Of Contents
 
 - [Installation](#installation)
+- [Getting Started](#getting-started)
 - [Usage](#usage)
 - [Project Structure](#project-structure)
 - [Configurations](#configurations)
 - [Logging](#logging)
 - [Documentation](#documentation)
 - [Future Work](#future-work)
+- [Projects Using This Template](#projects-using-this-template)
 - [License](#license)
 - [Acknowledgments](#acknowledgments)
 
 ## Installation
+
+The prerequisites for this project are:
+
+- Python 3.6+
 
 To intall this project, first clone the repository:
 
@@ -27,6 +35,10 @@ Then, install the dependencies:
 ```bash
 pip install -r requirements.txt
 ```
+
+## Getting Started
+
+To adapt this project to your needs, read the [Getting Started](docs/README.md#getting-started) section of the [documentation](docs/README.md).
 
 ## Usage
 
@@ -139,14 +151,25 @@ Read the [documentation](docs/README.md) for more details about the project and 
 Some of the features that I would like to add to this project template are:
 
 - [ ] Display model summary
+- [ ] Add support for distributed training
+- [ ] Add support for multi-GPU training
+
+## Projects Using This Template
+
+- Comparative Study on Self-Supervision Methods for Autonomous Driving (TBD...) (2024) by [Francisco Cerqueira](https://github.com/xico2001pt)
+
+If you want to see your project here, please contact the author.
 
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+Please **ACKNOWLEDGE THE AUTHOR** if you use this project in your research.
+
 ## Acknowledgments
 
 This repository was developed by [Francisco Cerqueira](https://github.com/xico2001pt) and was inspired by the following projects:
 
-- [pytorch-template](https://github.com/victoresque/pytorch-template)
-- [YOLOP](https://github.com/hustvl/YOLOP)
+- [pytorch-template](https://github.com/victoresque/pytorch-template) by [Victor Huang](https://github.com/victoresque)
+- [Tensorflow-Project-Template](https://github.com/MrGemy95/Tensorflow-Project-Template) by [Mahmoud Salem](https://github.com/MrGemy95)
+- [YOLOP](https://github.com/hustvl/YOLOP) by [hustvl](https://github.com/hustvl)
