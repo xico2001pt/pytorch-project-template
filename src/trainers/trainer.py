@@ -89,14 +89,15 @@ class Trainer:
         scheduler=None,
         stop_condition=None,
         metrics={},
+        start_epoch=1,
     ):
-        self.logger.info(f"Training for {num_epochs} epochs")
+        self.logger.info(f"Training for {num_epochs - start_epoch + 1} epochs")
 
         train_history = {"loss": [], "metrics": {metric: [] for metric in metrics}}
         validation_history = {"loss": [], "metrics": {metric: [] for metric in metrics}}
         best_validation_loss = np.inf
 
-        for epoch in range(1, num_epochs + 1):
+        for epoch in range(start_epoch, num_epochs + 1):
             self.logger.info(f"Epoch {epoch}/{num_epochs}")
 
             train_loss, train_metrics = self._epoch_iteration(

@@ -101,7 +101,7 @@ def main(args):
         config = loader.load_config_file(args.config)
 
         model, model_config = loader.load_model(config[c.Configurations.Parameters.MODEL_CONFIG_NAME])
-        # TODO: log summary
+        # TODO: log model
 
         training_config = config["train"]
         data = _load_train_data(loader, training_config, model, logger)
