@@ -90,6 +90,7 @@ class Trainer:
         stop_condition=None,
         metrics={},
         start_epoch=1,
+        save_freq=1,
     ):
         self.logger.info(f"Training for {num_epochs - start_epoch + 1} epochs")
 
@@ -123,7 +124,8 @@ class Trainer:
                 best_validation_loss = validation_loss
                 self._save_checkpoint(c.Trainer.Checkpoints.BEST_CHECKPOINT_FILENAME, optimizer, epoch)
 
-            self._save_checkpoint(c.Trainer.Checkpoints.LATEST_CHECKPOINT_FILENAME, optimizer, epoch)
+            if save_freq and (epoch % save_freq == 0 or epoch == num_epochs):
+                self._save_checkpoint(c.Trainer.Checkpoints.LATEST_CHECKPOINT_FILENAME, optimizer, epoch)
 
             train_history["loss"].append(train_loss)
             validation_history["loss"].append(validation_loss)

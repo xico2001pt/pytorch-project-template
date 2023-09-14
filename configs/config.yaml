@@ -1,9 +1,6 @@
-name: cifar10  # Name of experiment (used for log folder and model naming). If null, the name is the current date and time
+name: null  # Name of experiment (used for log folder and model naming). If null, the name is the current date and time
 
 model: model1  # Name of model
-
-trainer:
-  save_freq: 10  # Save model every save_freq epochs. If 0, only the best model is saved
 
 train:
   dataset: cifar10_train  # Dataset to use for training
@@ -17,6 +14,7 @@ train:
     num_workers: 4  # Number of workers for data loading
     batch_size: 32  # Training batch size
     train_val_split: 0.9  # Train/val split
+    save_freq: 10  # Save model every save_freq epochs. If 0, only the best model is saved
 
 test:
   dataset: cifar10_test  # Dataset to use for testing
