@@ -15,6 +15,7 @@ class Constants:
             METRICS_CONFIG_NAME = "metrics"  # Name of the metrics configuration parameter
             SCHEDULER_CONFIG_NAME = "scheduler"  # Name of the scheduler configuration parameter
             STOP_CONDITION_CONFIG_NAME = "stop_condition"  # Name of the stop condition configuration parameter
+            MODEL_WEIGHTS_PATH_CONFIG_NAME = "model_weights_path"  # Name of the model weights path configuration parameter
             HYPERPARAMETERS_CONFIG_NAME = "hyperparameters"  # Name of the hyperparameters configuration parameter
 
             EPOCHS_CONFIG_NAME = "epochs"  # Name of the epochs configuration parameter

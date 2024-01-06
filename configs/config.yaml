@@ -18,7 +18,7 @@ train:
 
 test:
   dataset: cifar10_test  # Dataset to use for testing
-  model_path: model1.pth  # Path to model weights (relative to weights folder). If null, config name is used
+  model_weights_path: model1.pth  # Path to model weights (relative to weights folder). If null, config name is used
   loss: cross_entropy  # Loss function
   metrics: [accuracy]  # Metrics to evaluate
   hyperparameters:  # Hyperparameters for testing
