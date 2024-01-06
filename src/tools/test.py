@@ -19,6 +19,7 @@ from src.utils.utils import _load_model, _get_device, _get_config_name
 
 CONFIGS_DIR = os.path.join(BASE_DIR, c.Configurations.CONFIGS_DIR)
 LOGS_DIR = os.path.join(BASE_DIR, c.Logging.LOGS_DIR)
+WEIGHTS_DIR = os.path.join(BASE_DIR, c.Trainer.WEIGHTS_DIR)
 
 
 def _load_test_data(loader, test_config, logger):
@@ -56,7 +57,8 @@ def _get_dataloader(dataset, batch_size, num_workers):
 
 def _load_model_weights(model, model_weights_path, logger):
     try:
-        model.load_state_dict(torch.load(model_weights_path))
+        path = os.path.join(WEIGHTS_DIR, model_weights_path)
+        model.load_state_dict(torch.load(path))
         logger.info("Model weights loaded successfully")
 
     except Exception:

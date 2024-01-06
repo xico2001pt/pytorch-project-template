@@ -6,7 +6,7 @@ from .constants import Constants as c
 def _load_model(loader, config, logger):
     model_name = config[c.Configurations.Parameters.MODEL_CONFIG_NAME]
     model, model_config = loader.load_model(model_name)
-    # TODO: log model
+    logger.log_config(c.Configurations.Parameters.MODEL_CONFIG_NAME, model_config)
     return model
 
 

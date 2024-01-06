@@ -7,7 +7,6 @@ from ..utils.constants import Constants as c
 
 class Trainer:
     def __init__(self, model, loss_fn, device, logger):
-        # TODO: Add configs
         self.model = model
         self.loss_fn = loss_fn
         self.device = device
