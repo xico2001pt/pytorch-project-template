@@ -3,7 +3,6 @@ import sys
 import time
 import torch
 import argparse
-from datetime import datetime
 from torch.utils.data import DataLoader
 
 

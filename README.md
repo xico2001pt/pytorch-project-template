@@ -6,6 +6,7 @@ If you use this template, please make sure to reference the author by including 
 
 ## Table Of Contents
 
+- [License](#license)
 - [Installation](#installation)
 - [Getting Started](#getting-started)
 - [Usage](#usage)
@@ -16,14 +17,21 @@ If you use this template, please make sure to reference the author by including 
 - [Future Work](#future-work)
 - [Projects Using This Template](#projects-using-this-template)
 - [Contributing](#contributing)
-- [License](#license)
 - [Acknowledgments](#acknowledgments)
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+Please **ACKNOWLEDGE THE AUTHOR** if you use this template in your project by including a link to this repository and the author's GitHub profile.
 
 ## Installation
 
 The prerequisites for this project are:
 
 - Python 3.6+
+- pip
+- git
 
 To intall this project, first clone the repository:
 
@@ -52,7 +60,7 @@ python src/tools/train.py --config configs/config.yaml
 To test a model, run the following command:
 
 ```bash
-python src/tools/test.py --model weights/model_name.pth
+python src/tools/test.py --config configs/config.yaml
 ```
 
 More details about the usage of the scripts can be found on the [documentation](docs/README.md).
@@ -69,12 +77,9 @@ pytorch-project-template/
 │   ├── models.yaml
 │   ├── optimizers.yaml
 │   ├── schedulers.yaml
-│   ├── stop_conditions.yaml
-│   └── ...
+│   └── stop_conditions.yaml
 ├── data/  # default directory for storing input data
-│   └── ...
 ├── docs/  # documentation files
-│   └── ...
 ├── logs/  # default directory for storing logs
 │   ├── YYYY-MM-DD-HH-MM-SS/  # training logs
 │   │   ├── checkpoints/  # model checkpoints
@@ -90,8 +95,7 @@ pytorch-project-template/
 │   │   ├── metrics.py  # evaluation metrics
 │   │   ├── optimizers.py  # optimizers
 │   │   ├── schedulers.py  # learning rate schedulers
-│   │   ├── stop_conditions.py  # stop conditions
-│   │   └── ...
+│   │   └── stop_conditions.py  # stop conditions
 │   ├── datasets/  # contains the dataset definitions
 │   │   ├── __init__.py  # exports the dataset definitions
 │   │   ├── dataset1.py
@@ -124,7 +128,7 @@ pytorch-project-template/
 
 The configurations are stored in the `configs` directory. The configurations are divided into several files, each one containing the configurations for a specific section of the project. The following files are available:
 
-- `config.yaml`: contains the general configurations for the project
+- `config.yaml`: contains the configurations for a specific run
 - `datasets.yaml`: contains the configurations for the datasets
 - `losses.yaml`: contains the configurations for the loss functions
 - `metrics.yaml`: contains the configurations for the evaluation metrics
@@ -166,12 +170,6 @@ If you want to see your project here, please contact the author or create a pull
 ## Contributing
 
 If you want to contribute to this project, please contact the author or create a pull request with a description of the feature or bug fix.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-Please **ACKNOWLEDGE THE AUTHOR** if you use this project in your research.
 
 ## Acknowledgments
 
