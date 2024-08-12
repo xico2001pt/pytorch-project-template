@@ -47,20 +47,20 @@ pip install -r requirements.txt
 
 ## Getting Started
 
-To adapt this project to your needs, read the [Getting Started](docs/README.md#getting-started) section of the [documentation](docs/README.md).
+To adapt this project to your needs, it is recommended to read the [documentation](docs/README.md) file. This file contains a brief overview of the available documentation and links to the different sections of the documentation.
 
 ## Usage
 
 To train a model, run the following command:
 
 ```bash
-python src/tools/train.py --config configs/config.yaml
+python src/tools/train.py --config config.yaml
 ```
 
 To test a model, run the following command:
 
 ```bash
-python src/tools/test.py --config configs/config.yaml
+python src/tools/test.py --config config.yaml
 ```
 
 More details about the usage of the scripts can be found on the [documentation](docs/README.md).
@@ -128,7 +128,7 @@ pytorch-project-template/
 
 The configurations are stored in the `configs` directory. The configurations are divided into several files, each one containing the configurations for a specific section of the project. The following files are available:
 
-- `config.yaml`: contains the configurations for a specific run
+- `config.yaml`: contains the configurations for a specific run (can be given any name, as it is passed as an argument to the scripts)
 - `datasets.yaml`: contains the configurations for the datasets
 - `losses.yaml`: contains the configurations for the loss functions
 - `metrics.yaml`: contains the configurations for the evaluation metrics
@@ -141,12 +141,12 @@ More details about the configurations can be found on the [documentation](docs/R
 
 ## Logging
 
-The `Logger` class is used to log all the information about the run. Each run is stored in a directory inside the `logs` directory, where the name of the directory is the date and time of the run. Inside the directory, there are two files:
+The `Logger` class is used to log all the information about the run. Each run is stored in a directory inside the `logs` directory, where the name of the directory is the date and time of the run. Inside the directory, the following files can exist:
 
-- `log.yaml`: contains all the information about the run
-- `output.log`: contains the redirected output of the console
-
-More details about the logging can be found on the [documentation](docs/README.md).
+- `train_log.yaml`: contains all the information about the training run
+- `train_output.log`: contains the redirected output of the console during training
+- `test_log.yaml`: contains all the information about the testing run
+- `test_output.log`: contains the redirected output of the console during testing
 
 ## Documentation
 
@@ -157,13 +157,14 @@ Read the [documentation](docs/README.md) for more details about the project and 
 Some of the features that I would like to add to this project template are:
 
 - [ ] Display model summary
-- [ ] Add confusion matrix metric and visualization
+- [ ] Load pre-trained weights
+- [ ] Add support for inlining the configurations
+- [ ] Log multi-term losses
 - [ ] Add support for distributed training
-- [ ] Add support for multi-GPU training
 
 ## Projects Using This Template
 
-- Comparative Study on Self-Supervision Methods for Autonomous Driving (TBD...) (2024) by [Francisco Cerqueira](https://github.com/xico2001pt)
+- [Exploring Label Efficiency with Semi-Supervision and Self-Supervision Methods](https://github.com/xico2001pt/exploring-label-efficiency) (2024) by [Francisco Cerqueira](https://github.com/xico2001pt)
 
 If you want to see your project here, please contact the author or create a pull request.
 
