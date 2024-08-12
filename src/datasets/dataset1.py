@@ -1,12 +1,12 @@
 import torchvision.datasets as datasets
 import torchvision.transforms as transforms
-import sys
-import os
+from ..utils.utils import process_data_path
 
 
 class Dataset1(datasets.CIFAR10):
     def __init__(self, data_dir, train=True, download=True):
-        root = os.path.join(sys.path[-1], data_dir)
+        root = process_data_path(data_dir)
+        print(root)
         transform = transforms.Compose(
             [
                 transforms.ToTensor(),

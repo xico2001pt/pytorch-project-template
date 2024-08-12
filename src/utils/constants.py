@@ -38,6 +38,7 @@ class Constants:
         STOP_CONDITIONS_CONFIG_FILENAME = "stop_conditions.yaml"  # Name of the stop conditions configuration file
 
     class Logging:  # Logging constants
+        LOGS_DIR = os.path.join(ROOT_DIR, "logs")  # Root directory where all logs are stored
         TRAIN_OUTPUT_FILENAME = "train_output.log"  # Name of the file that contains the redirected train output of the console
         TEST_OUTPUT_FILENAME = "test_output.log"  # Name of the file that contains the redirected test output of the console
         TRAIN_LOG_FILENAME = "train_log.yaml"  # Name of the file that contains the train configurations of the run

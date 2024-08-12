@@ -1,4 +1,4 @@
-name: null  # Name of experiment (used for log folder and model naming). If null, the name is the current date and time
+name: cifar10  # Name of experiment (used for log folder and model naming). If null, the name is the current date and time
 
 model: model1  # Name of model
 
@@ -18,7 +18,7 @@ train:
 
 test:
   dataset: cifar10_test  # Dataset to use for testing
-  model_weights_path: model1.pth  # Path to model weights (relative to weights folder). If null, config name is used
+  model_weights_path: cifar10.pth  # Path to model weights (relative to weights folder). If null, config name is used
   loss: cross_entropy  # Loss function
   metrics: [accuracy]  # Metrics to evaluate
   hyperparameters:  # Hyperparameters for testing
