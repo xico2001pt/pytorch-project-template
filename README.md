@@ -54,13 +54,13 @@ To adapt this project to your needs, it is recommended to read the [documentatio
 To train a model, run the following command:
 
 ```bash
-python src/tools/train.py --config config.yaml
+python -m src.tools.train --config config.yaml
 ```
 
 To test a model, run the following command:
 
 ```bash
-python src/tools/test.py --config config.yaml
+python -m src.tools.test --config config.yaml
 ```
 
 More details about the usage of the scripts can be found on the [documentation](docs/README.md).
