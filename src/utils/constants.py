@@ -1,3 +1,8 @@
+import os
+
+ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # Root directory of the project
+
+
 class Constants:
     class Arguments:  # Command line arguments constants
         CONFIG_FILE_ARGUMENT_NAME = "--config"  # Name of the configuration file argument
@@ -5,7 +10,7 @@ class Constants:
         CONFIG_FILE_HELP = "Path to the configuration file"  # Help message of the configuration file argument
 
     class Configurations:  # Configuration file constants
-        CONFIGS_DIR = "configs"  # Root directory where all configurations are stored
+        CONFIGS_DIR = os.path.join(ROOT_DIR, "configs")  # Root directory where all configurations are stored
 
         class Parameters:  # Configuration file parameters constants
             MODEL_CONFIG_NAME = "model"  # Name of the model configuration parameter
@@ -33,7 +38,7 @@ class Constants:
         STOP_CONDITIONS_CONFIG_FILENAME = "stop_conditions.yaml"  # Name of the stop conditions configuration file
 
     class Logging:  # Logging constants
-        LOGS_DIR = "logs"  # Root directory where all logs are stored
+        LOGS_DIR = os.path.join(ROOT_DIR, "logs")  # Root directory where all logs are stored
         OUTPUT_FILENAME = "output.log"  # Name of the file that contains the redirected output of the console
         LOG_FILENAME = "log.yaml"  # Name of the file that contains the configurations of the run
 

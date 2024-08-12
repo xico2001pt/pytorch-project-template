@@ -1,24 +1,18 @@
 import os
-import sys
 import time
 import torch
 import argparse
 from torch.utils.data import DataLoader
-
-
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-sys.path.append(BASE_DIR)
-
 from src.trainers.trainer import Trainer
 from src.utils.loader import Loader
 from src.utils.logger import Logger
-from src.utils.constants import Constants as c
+from src.utils.constants import Constants as c, ROOT_DIR
 from src.utils.utils import _load_model, _get_device, _get_config_name
 
 
-CONFIGS_DIR = os.path.join(BASE_DIR, c.Configurations.CONFIGS_DIR)
-LOGS_DIR = os.path.join(BASE_DIR, c.Logging.LOGS_DIR)
-WEIGHTS_DIR = os.path.join(BASE_DIR, c.Trainer.WEIGHTS_DIR)
+CONFIGS_DIR = c.Configurations.CONFIGS_DIR
+LOGS_DIR = c.Logging.LOGS_DIR
+WEIGHTS_DIR = os.path.join(ROOT_DIR, c.Trainer.WEIGHTS_DIR)
 
 
 def _load_test_data(loader, test_config, logger):
