@@ -3,7 +3,8 @@ name: cifar10  # Name of experiment (used for log folder and model naming). If n
 model: model1  # Name of model
 
 train:
-  dataset: cifar10_train  # Dataset to use for training
+  train_dataset: cifar10  # Dataset to use for training
+  val_dataset: cifar10  # Dataset to use for validation
   optimizer: sgd  # Optimizer
   loss: cross_entropy  # Loss function
   metrics: [accuracy]  # Metrics to evaluate
@@ -13,11 +14,10 @@ train:
     epochs: 20  # Number of training epochs
     num_workers: 4  # Number of workers for data loading
     batch_size: 32  # Training batch size
-    train_val_split: 0.9  # Train/val split
     save_freq: 10  # Save model every save_freq epochs. If 0, only the best model is saved
 
 test:
-  dataset: cifar10_test  # Dataset to use for testing
+  test_dataset: cifar10  # Dataset to use for testing
   model_weights_path: cifar10.pth  # Path to model weights (relative to weights folder). If null, config name is used
   loss: cross_entropy  # Loss function
   metrics: [accuracy]  # Metrics to evaluate

@@ -14,7 +14,9 @@ class Constants:
 
         class Parameters:  # Configuration file parameters constants
             MODEL_CONFIG_NAME = "model"  # Name of the model configuration parameter
-            DATASET_CONFIG_NAME = "dataset"  # Name of the dataset configuration parameter
+            TRAIN_DATASET_CONFIG_NAME = "train_dataset"  # Name of the train dataset configuration parameter
+            VALIDATION_DATASET_CONFIG_NAME = "val_dataset"  # Name of the val dataset configuration parameter
+            TEST_DATASET_CONFIG_NAME = "test_dataset"  # Name of the test dataset configuration parameter
             OPTIMIZER_CONFIG_NAME = "optimizer"  # Name of the optimizer configuration parameter
             LOSS_CONFIG_NAME = "loss"  # Name of the loss configuration parameter
             METRICS_CONFIG_NAME = "metrics"  # Name of the metrics configuration parameter
@@ -51,3 +53,6 @@ class Constants:
             CHECKPOINTS_DIR = "checkpoints"  # Directory (inside the run log directory) where checkpoints are stored
             BEST_CHECKPOINT_FILENAME = "best_checkpoint.pth"  # Name of the best checkpoint file
             LATEST_CHECKPOINT_FILENAME = "latest_checkpoint.pth"  # Name of the latest checkpoint file
+
+    class Miscellaneous:
+        SEED = 201905337  # Seed for reproducibility

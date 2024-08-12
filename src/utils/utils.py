@@ -1,6 +1,7 @@
 import os
 import torch
 from datetime import datetime
+from torch.utils.data import random_split
 from .constants import Constants as c, ROOT_DIR
 
 
@@ -33,3 +34,15 @@ def process_data_path(data_path):
     if not os.path.isabs(data_path):
         data_path = os.path.join(ROOT_DIR, data_path)
     return data_path
+
+
+def split_train_val_data(dataset, train_val_split):
+    generator = torch.Generator().manual_seed(c.Miscellaneous.SEED)
+
+    if train_val_split > 1:
+        train_samples = train_val_split
+    else:
+        train_samples = int(train_val_split * len(dataset))
+
+    val_samples = len(dataset) - train_samples
+    return random_split(dataset, [train_samples, val_samples], generator=generator)
